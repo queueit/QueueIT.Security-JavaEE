@@ -185,6 +185,54 @@ public class KnownUserFactoryTest {
         VerifyMd5Hash_Test("becb0723-fee7-4a82-87d0-622475c7cf36", 1349168841, 7810, "88401038-0306-4831-b7c0-e115da0bdc46", "d4e47d0b1a732c5dbf3e10d92881ed93", "mpro");
     }
 
+    @Test()
+    public void KnownUserFactory_VerifyMd5HashTest_KnownUserException_Test() {
+        //Arrange
+        Date expectedTimeStamp = null;
+        String querystringPrefix = "mpro";
+        int unixTimestamp = 1349168841;
+        String expectedQueueId = "becb0723-fee7-4a82-87d0-622475c7cf36";
+        String placeInQueueEncrypted = "88401038-0306-4831-b7c0-e115da0bdc46";
+        String hash = "d4e47d0b1a732c5dbf3e10d92881ed93";
+
+        try {
+            if (unixTimestamp > 0) {
+                expectedTimeStamp = Calendar.getInstance().getTime();
+                expectedTimeStamp.setTime(unixTimestamp * 1000);
+            }
+        } catch (Exception e) {
+            //Ignore
+        }
+        RedirectType expectedRedirectType = RedirectType.Queue;
+        String expectedCustomerId = "somecust";
+        String expectedEventId = "someevent";
+        String expectedOriginalUrl = "http://www.ticketanina.com/shop.aspx?x=sdfsdf";
+        String urlWithHash = expectedOriginalUrl
+                + "&" + querystringPrefix + "q=" + expectedQueueId
+                + "&" + querystringPrefix + "p=" + placeInQueueEncrypted
+                + "&" + querystringPrefix + "ts=" + unixTimestamp
+                + "&" + querystringPrefix + "c=" + expectedCustomerId
+                + "&" + querystringPrefix + "e=" + expectedEventId
+                + "&" + querystringPrefix + "h=" + hash;
+
+        MockUrlProvider urlProvider = null; 
+        try {
+            urlProvider = new MockUrlProvider(new URI(urlWithHash), expectedQueueId, placeInQueueEncrypted, String.valueOf(unixTimestamp), expectedEventId, expectedCustomerId, new URI(expectedOriginalUrl), expectedRedirectType.toString());
+        } catch (Exception ex) {
+            //ignore
+        }
+                    
+        //Act
+        try
+        {
+            IKnownUser knownUser = KnownUserFactory.verifyMd5Hash(SharedSecreteEventKey, urlProvider, querystringPrefix);
+        } catch (KnownUserException ex) {
+            //Assert
+            assertEquals(expectedOriginalUrl, ex.getOriginalUrl().toString());
+            assertEquals(urlWithHash, ex.getValidationUrl().toString());
+        }     
+    }
+        
     @Test(expected = InvalidKnownUserUrlException.class)
     public void KnownUserFactory_VerifyMd5HashTest_NoParameters_Test() {
         // "d4e47d0b1a732c5dbf3e10d92881ed92" is valid hash

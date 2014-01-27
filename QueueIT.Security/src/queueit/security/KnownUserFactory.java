@@ -115,10 +115,10 @@ public class KnownUserFactory {
             querystringPrefix = "";
         }
         
+        URI url = urlProvider.getUrl();
         URI originalUrl = urlProvider.getOriginalUrl(querystringPrefix);
         
         try {
-            URI url = urlProvider.getUrl();
             UUID queueId = parseQueueId(urlProvider.getQueueId(querystringPrefix));
             String placeInQueueObfuscated = urlProvider.getPlaceInQueue(querystringPrefix);
             Integer placeInQueue = null; 
@@ -150,11 +150,9 @@ public class KnownUserFactory {
             validateHash(url, secretKey, expectedHash);
 
             return new Md5KnownUser(queueId, placeInQueue, timeStamp, customerId, eventId, redirectType, originalUrl);
-        } catch (InvalidKnownUserHashException ex) {
+        } catch (KnownUserException ex) {
             ex.setOriginalUrl(originalUrl);
-            throw ex;
-        } catch (InvalidKnownUserUrlException ex) {
-            ex.setOriginalUrl(originalUrl);
+            ex.setValidationUrl(url);
             throw ex;
         }
     }
