@@ -14,6 +14,9 @@ public class KnownUserFactory {
     private static String defaultSecretKey;
     private static String defaultQuerystringPrefix;
     private static Callable<IKnownUserUrlProvider> defaultUrlProviderFactory;
+    public static String getSecretKey() {
+        return defaultSecretKey;
+    }
     
     static {
         defaultUrlProviderFactory = new Callable<IKnownUserUrlProvider>() {

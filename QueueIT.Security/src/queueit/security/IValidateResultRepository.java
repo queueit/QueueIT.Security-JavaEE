@@ -1,6 +1,6 @@
 package queueit.security;
 
 public interface IValidateResultRepository {
-    IValidateResult GetValidationResult(IQueue queue);
-    void SetValidationResult(IQueue queue, IValidateResult validationResult);
+    IValidateResult getValidationResult(IQueue queue);
+    void setValidationResult(IQueue queue, IValidateResult validationResult);
 }

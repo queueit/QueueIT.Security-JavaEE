@@ -72,6 +72,6 @@
 
     -->
     <target name="-post-jar">
-        <copy file="${dist.jar}" todir="../QueueIT.Security.Examples.Java/web/WEB-INF/lib"/>
+        <copy file="${dist.jar}" todir="../QueueIT.Security.Examples/web/WEB-INF/lib"/>
     </target>
 </project>

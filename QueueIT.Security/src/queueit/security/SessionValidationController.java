@@ -10,7 +10,7 @@ import java.util.concurrent.Callable;
 public class SessionValidationController {
 
     private static int defaultTicketExpiration = 0;
-    private static IValidateResultRepository defaultValidationResultRepository = new SessionValidateResultRepository();
+    private static IValidateResultRepository defaultValidationResultRepository = new CookieValidateResultRepository();
     private static Callable<IValidateResultRepository> defaultValidationResultProviderFactory = new Callable<IValidateResultRepository>() {
         public IValidateResultRepository call() {
             return defaultValidationResultRepository;
@@ -319,7 +319,7 @@ public class SessionValidationController {
             String layoutName) {
         IValidateResult sessionObject = null;
         try {
-            sessionObject = defaultValidationResultProviderFactory.call().GetValidationResult(queue);
+            sessionObject = defaultValidationResultProviderFactory.call().getValidationResult(queue);
         } catch (Exception ex) {
             // ignore
         }
@@ -357,7 +357,7 @@ public class SessionValidationController {
 
             AcceptedConfirmedResult result = new AcceptedConfirmedResult(queue, knownUser, true);
             try {
-                defaultValidationResultProviderFactory.call().SetValidationResult(queue, result);
+                defaultValidationResultProviderFactory.call().setValidationResult(queue, result);
             } catch (Exception ex) {
                 //ignore
             }

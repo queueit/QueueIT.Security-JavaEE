@@ -2,6 +2,7 @@ package queueit.security;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.util.UUID;
 
 public class Hashing {
 
@@ -17,6 +18,22 @@ public class Hashing {
         String e = encryptedPlaceInQueue;
         String p = e.substring(30, 31) + e.substring(3, 4) + e.substring(11, 12) + e.substring(20, 21) + e.substring(7, 8) + e.substring(26, 27) + e.substring(9, 10);
         return Integer.parseInt(p);
+    }
+    
+    public static String encryptPlaceInQueue(Integer placeInQueue) {
+        
+        char[] placeInQueueChars = String.format("%07d", placeInQueue).toCharArray();
+        
+        char[] encryptedPlaceInQueue = UUID.randomUUID().toString().toCharArray();
+        encryptedPlaceInQueue[9] = placeInQueueChars[6];
+        encryptedPlaceInQueue[26] = placeInQueueChars[5];
+        encryptedPlaceInQueue[7] = placeInQueueChars[4];
+        encryptedPlaceInQueue[20] = placeInQueueChars[3];
+        encryptedPlaceInQueue[11] = placeInQueueChars[2];
+        encryptedPlaceInQueue[3] = placeInQueueChars[1];
+        encryptedPlaceInQueue[30] = placeInQueueChars[0];
+
+        return new String(encryptedPlaceInQueue);
     }
 
     static String getMd5Hash(String stringToHash) {

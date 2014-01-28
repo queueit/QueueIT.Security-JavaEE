@@ -45,7 +45,7 @@ public class DefaultKnownUserUrlProviderTest {
         String expectedUrl = "http://some.url/somepath/default.aspx?x=sdfs";
         
         HttpServletRequest request = new MockHttpServletRequest(expectedUrl);
-        RequestContext.newInstance(request);
+        RequestContext.newInstance(request, null);
         
         DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider();
         URI actualUrl = provider.getUrl();
@@ -72,7 +72,7 @@ public class DefaultKnownUserUrlProviderTest {
         String url = "http://q.queue-it.net/inqueue.aspx?prefixc=somecust&prefixe=someevent&prefixq=75985c0d-cfeb-4ede-9141-fc8c09f4bb75&prefixp=13b05d38-0109-46de-a7a5-f51e210b4fd7&prefixts=1367583725&prefixrt=&prefixh=f7d55d1101f4a11621f1006b86d163ce";
         
         HttpServletRequest request = new MockHttpServletRequest(url);
-        RequestContext.newInstance(request);
+        RequestContext.newInstance(request, null);
         
         DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider();
                 
@@ -85,7 +85,7 @@ public class DefaultKnownUserUrlProviderTest {
         String url = "http://q.queue-it.net/inqueue.aspx?prefixc=somecust&prefixe=someevent&prefixq=75985c0d-cfeb-4ede-9141-fc8c09f4bb75&prefixp=13b05d38-0109-46de-a7a5-f51e210b4fd7&prefixts=1367583725&prefixrt=&prefixh=f7d55d1101f4a11621f1006b86d163ce";
         
         HttpServletRequest request = new MockHttpServletRequest(url);
-        RequestContext.newInstance(request);
+        RequestContext.newInstance(request, null);
         
         DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider();
                 
@@ -98,7 +98,7 @@ public class DefaultKnownUserUrlProviderTest {
         String url = "http://q.queue-it.net/inqueue.aspx?prefixc=somecust&prefixe=someevent&prefixq=75985c0d-cfeb-4ede-9141-fc8c09f4bb75&prefixp=13b05d38-0109-46de-a7a5-f51e210b4fd7&prefixts=1367583725&prefixrt=&prefixh=f7d55d1101f4a11621f1006b86d163ce";
         
         HttpServletRequest request = new MockHttpServletRequest(url);
-        RequestContext.newInstance(request);
+        RequestContext.newInstance(request, null);
         
         DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider();
                 
@@ -111,7 +111,7 @@ public class DefaultKnownUserUrlProviderTest {
         String url = "http://q.queue-it.net/inqueue.aspx?prefixc=somecust&prefixe=someevent&prefixq=75985c0d-cfeb-4ede-9141-fc8c09f4bb75&prefixp=13b05d38-0109-46de-a7a5-f51e210b4fd7&prefixts=1367583725&prefixrt=&prefixh=f7d55d1101f4a11621f1006b86d163ce";
         
         HttpServletRequest request = new MockHttpServletRequest(url);
-        RequestContext.newInstance(request);
+        RequestContext.newInstance(request, null);
         
         DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider();
                 
@@ -124,7 +124,7 @@ public class DefaultKnownUserUrlProviderTest {
         String url = "http://q.queue-it.net/inqueue.aspx?prefixc=somecust&prefixe=someevent&prefixq=75985c0d-cfeb-4ede-9141-fc8c09f4bb75&prefixp=13b05d38-0109-46de-a7a5-f51e210b4fd7&prefixts=1367583725&prefixrt=&prefixh=f7d55d1101f4a11621f1006b86d163ce";
         
         HttpServletRequest request = new MockHttpServletRequest(url);
-        RequestContext.newInstance(request);
+        RequestContext.newInstance(request, null);
         
         DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider();
                 
@@ -137,7 +137,7 @@ public class DefaultKnownUserUrlProviderTest {
         String url = "http://q.queue-it.net/inqueue.aspx?prefixc=somecust&prefixe=someevent&prefixq=75985c0d-cfeb-4ede-9141-fc8c09f4bb75&prefixp=13b05d38-0109-46de-a7a5-f51e210b4fd7&prefixrt=SafetyNet&prefixts=1367583725&prefixh=f7d55d1101f4a11621f1006b86d163ce";
         
         HttpServletRequest request = new MockHttpServletRequest(url);
-        RequestContext.newInstance(request);
+        RequestContext.newInstance(request, null);
         
         DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider();
                 
@@ -151,7 +151,7 @@ public class DefaultKnownUserUrlProviderTest {
         String url = "http://q.queue-it.net/inqueue.aspx?prefixc=somecust&prefixe=someevent&prefixq=75985c0d-cfeb-4ede-9141-fc8c09f4bb75&prefixp=13b05d38-0109-46de-a7a5-f51e210b4fd7&prefixrt=SafetyNet&prefixts=1367583725&prefixh=f7d55d1101f4a11621f1006b86d163ce";
         
         HttpServletRequest request = new MockHttpServletRequest(url);
-        RequestContext.newInstance(request);
+        RequestContext.newInstance(request, null);
         
         DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider();
                 
@@ -165,7 +165,7 @@ public class DefaultKnownUserUrlProviderTest {
         String url = "http://q.queue-it.net/inqueue.aspx?somekey=somevalue&prefixc=somecust&prefixe=someevent&prefixq=75985c0d-cfeb-4ede-9141-fc8c09f4bb75&prefixp=13b05d38-0109-46de-a7a5-f51e210b4fd7&prefixrt=SafetyNet&prefixts=1367583725&prefixh=f7d55d1101f4a11621f1006b86d163ce";
         
         HttpServletRequest request = new MockHttpServletRequest(url);
-        RequestContext.newInstance(request);
+        RequestContext.newInstance(request, null);
         
         DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider();
                 
