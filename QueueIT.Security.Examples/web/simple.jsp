@@ -3,11 +3,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%
-    SessionValidationController.Configure(null, new Callable<IValidateResultRepository>() {
-        public IValidateResultRepository call() {
-            return new SessionValidateResultRepository();
-        }
-    });
     try
     {
         IValidateResult result = SessionValidationController.validateRequest();

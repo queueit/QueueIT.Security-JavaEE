@@ -15,6 +15,7 @@ import javax.xml.bind.DatatypeConverter;
 public class CookieValidateResultRepository extends ValidateResultRepositoryBase {
 
     static String defaultCookieDomain;
+    static int defaultCookieExpiration = 1200;
     
     static {       
         loadConfiguration();
@@ -30,6 +31,7 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
             if (configFile != null) {
                 props.load(configFile);
                 defaultCookieDomain = props.getProperty("cookieDomain", null);
+                defaultCookieExpiration =  Integer.parseInt(props.getProperty("cookieExpiration", "1200"));
             }
         } catch (Exception e) {
             // no need to handle exception
@@ -81,6 +83,8 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
         if (!expectedHash.equals(actualHash))
             return null;
         
+        setCookie(queue, queueId, originalUrl, placeInQueue, redirectType, timeStamp, actualHash);
+        
         return new AcceptedConfirmedResult(
                 queue, 
                 new Md5KnownUser(
@@ -100,10 +104,7 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
         if (validationResult instanceof AcceptedConfirmedResult)
         {   
             AcceptedConfirmedResult confirmedResult = (AcceptedConfirmedResult)validationResult;
-            
-            String key = generateKey(queue.getCustomerId(), queue.getEventId());
-            HttpServletResponse response = RequestContext.getCurrentInstance().getResponse();
-            
+
             String queueId = confirmedResult.getKnownUser().getQueueId().toString();
             String originalUrl = confirmedResult.getKnownUser().getOriginalUrl().toString();
             Integer placeInQueue = confirmedResult.getKnownUser().getPlaceInQueue();
@@ -112,21 +113,30 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
             
             String hash = generateHash(queueId, originalUrl, placeInQueue.toString(), redirectType, timeStamp.toString());
 
-            addCookie(new Cookie(key + "-QueueId", queueId), response);
+            setCookie(queue, queueId, originalUrl, placeInQueue, redirectType, timeStamp.toString(), hash);
+        }                
+    }
+    
+    private void setCookie(IQueue queue, String queueId, String originalUrl, Integer placeInQueue, String redirectType, String timeStamp, String hash)
+    {
+        String key = generateKey(queue.getCustomerId(), queue.getEventId());
+        HttpServletResponse response = RequestContext.getCurrentInstance().getResponse();
+        
+        addCookie(new Cookie(key + "-QueueId", queueId), response);
             addCookie(new Cookie(key + "-OriginalUrl", originalUrl), response);
             addCookie(new Cookie(key + "-PlaceInQueue", Hashing.encryptPlaceInQueue(placeInQueue)), response);
             addCookie(new Cookie(key + "-RedirectType", redirectType), response);
             addCookie(new Cookie(key + "-TimeStamp", timeStamp.toString()), response);
             addCookie(new Cookie(key + "-Hash", hash), response);           
-        }                
     }
     
     private void addCookie(Cookie cookie, HttpServletResponse response)
     {
         cookie.setHttpOnly(true);      
+        cookie.setMaxAge(defaultCookieExpiration);
         if (defaultCookieDomain != null)
             cookie.setDomain(defaultCookieDomain);
-        
+                
         response.addCookie(cookie);
     }
 
