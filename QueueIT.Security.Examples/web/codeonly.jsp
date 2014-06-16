@@ -1,16 +1,9 @@
 <%@page import="java.util.concurrent.Callable"%>
 <%@page import="queueit.security.*"%>
-<%@page import="queueit.security.examples.java.AUKnownUserUrlProvider" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<%             
-    Callable<IKnownUserUrlProvider> knownUserFactory = new Callable<IKnownUserUrlProvider>() {
-            public IKnownUserUrlProvider call() {
-                return new AUKnownUserUrlProvider();
-            }
-    };
-    
-    KnownUserFactory.configure("a774b1e2-8da7-4d51-b1a9-7647147bb13bace77210-a488-4b6f-afc9-8ba94551a7d7", knownUserFactory);
+<%               
+    KnownUserFactory.configure("a774b1e2-8da7-4d51-b1a9-7647147bb13bace77210-a488-4b6f-afc9-8ba94551a7d7");
 
     try
     {
