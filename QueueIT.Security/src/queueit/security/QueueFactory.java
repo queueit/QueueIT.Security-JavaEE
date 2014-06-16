@@ -32,13 +32,7 @@ public class QueueFactory {
         String fileName = "queueit-" + queueName + ".properties";
         try {
             // Load the properties
-            Properties props = new Properties();
-            ClassLoader classLoader = KnownUserFactory.class.getClassLoader();     
-            InputStream configFile = classLoader.getResourceAsStream(fileName);
-            if (configFile == null) {
-                throw new IllegalArgumentException("Properties file '" + fileName + "' not found in classpath");
-            }
-            props.load(configFile);
+            Properties props = QueueitProperties.getProperties(fileName);
 
             String landingPage = props.getProperty("landingPage", null);
             String language = props.getProperty("language", null);

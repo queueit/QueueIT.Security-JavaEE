@@ -22,21 +22,17 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
     }
     
     private static void loadConfiguration()
-    {
+    { 
         try {
             // Load the properties
-            Properties props = new Properties();
-            ClassLoader classLoader = CookieValidateResultRepository.class.getClassLoader();     
-            InputStream configFile = classLoader.getResourceAsStream("queueit.properties");
-            if (configFile != null) {
-                props.load(configFile);
-                defaultCookieDomain = props.getProperty("cookieDomain", null);
-                defaultCookieExpiration =  Integer.parseInt(props.getProperty("cookieExpiration", "1200"));
-            }
+            Properties props = QueueitProperties.getProperties("queueit.properties");
+            defaultCookieDomain = props.getProperty("cookieDomain", null);
+            defaultCookieExpiration =  Integer.parseInt(props.getProperty("cookieExpiration", "1200"));
         } catch (Exception e) {
             // no need to handle exception
-        }      
+        }    
     }
+    
     @Override
     public IValidateResult getValidationResult(IQueue queue) {
         

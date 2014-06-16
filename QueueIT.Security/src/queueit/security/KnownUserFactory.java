@@ -32,18 +32,12 @@ public class KnownUserFactory {
     {
         try {
             // Load the properties
-            Properties props = new Properties();
-            ClassLoader classLoader = KnownUserFactory.class.getClassLoader();     
-            InputStream configFile = classLoader.getResourceAsStream("queueit.properties");
-            if (configFile != null) {
-                props.load(configFile);
-                defaultSecretKey = props.getProperty("secretKey", null);
-                defaultQuerystringPrefix = props.getProperty("queryStringPrefix", null);
-            }
+            Properties props = QueueitProperties.getProperties("queueit.properties");
+            defaultSecretKey = props.getProperty("secretKey", null);
+            defaultQuerystringPrefix = props.getProperty("queryStringPrefix", null);
         } catch (Exception e) {
-            String x = e.getMessage();
-            // Handle exception as needed
-        }      
+            // Ignore
+        }        
     }
     
     public static void configure(String sharedEventKey) {

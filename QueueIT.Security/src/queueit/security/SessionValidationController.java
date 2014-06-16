@@ -370,16 +370,11 @@ public class SessionValidationController {
         }
     }
 
-    private static void loadConfiguration() {
+    private static void loadConfiguration() {       
         try {
             // Load the properties
-            Properties props = new Properties();
-            ClassLoader classLoader = KnownUserFactory.class.getClassLoader();
-            InputStream configFile = classLoader.getResourceAsStream("queueit.properties");
-            if (configFile != null) {
-                props.load(configFile);
-                defaultTicketExpiration = Integer.parseInt(props.getProperty("ticketExpiration", "180"));
-            }
+            Properties props = QueueitProperties.getProperties("queueit.properties");
+            defaultTicketExpiration = Integer.parseInt(props.getProperty("ticketExpiration", "180"));
         } catch (Exception e) {
             // ignore
         }
