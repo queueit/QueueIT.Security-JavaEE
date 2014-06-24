@@ -21,8 +21,7 @@ public class Hashing {
     }
     
     public static String encryptPlaceInQueue(Integer placeInQueue) {
-        
-        char[] placeInQueueChars = String.format("%07d", placeInQueue).toCharArray();
+        char[] placeInQueueChars = String.format("%07d", placeInQueue != null ? placeInQueue : 0).toCharArray();
         
         char[] encryptedPlaceInQueue = UUID.randomUUID().toString().toCharArray();
         encryptedPlaceInQueue[9] = placeInQueueChars[6];

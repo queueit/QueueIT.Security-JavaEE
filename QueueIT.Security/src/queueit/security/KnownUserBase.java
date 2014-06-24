@@ -54,7 +54,9 @@ abstract class KnownUserBase implements IKnownUser {
     }   
     
     void setPlaceInQueue(Integer value) {
-        if (value <= 0 || value >= 9999999) {
+        if (value == null)
+            this.placeInQueue = null;
+        else if (value <= 0 || value >= 9999999) {
             this.placeInQueue = null;
         } else {
             this.placeInQueue = value;

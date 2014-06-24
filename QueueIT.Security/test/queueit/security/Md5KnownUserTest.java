@@ -54,4 +54,19 @@ public class Md5KnownUserTest {
         assertEquals(null, knownUser.getPlaceInQueue());
         assertEquals(expectedTimeStamp, knownUser.getTimeStamp());
     }
+    
+        @Test
+    public void Md5KnownUser_Constructor_PlaceInQueueIsNull_Test() {
+        //Arrange
+        UUID expectedQueueId = UUID.randomUUID();
+        Date expectedTimeStamp = Calendar.getInstance().getTime();
+
+        //Act
+        Md5KnownUser knownUser = new Md5KnownUser(expectedQueueId, null, expectedTimeStamp, null, null, RedirectType.Unknown, null);
+
+        //Assert        
+        assertEquals(expectedQueueId, knownUser.getQueueId());
+        assertEquals(null, knownUser.getPlaceInQueue());
+        assertEquals(expectedTimeStamp, knownUser.getTimeStamp());
+    }
 }

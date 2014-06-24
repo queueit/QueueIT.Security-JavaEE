@@ -39,7 +39,6 @@ public class HashingTest {
      */
     @Test
     public void testDecryptPlaceInQueue() {
-        System.out.println("DecryptPlaceInQueue");
         String encryptedPlaceInQueue = "21206da6-3f0a-468d-9325-471d070bbbfd";
         Integer expResult = 3613;
         Integer result = Hashing.decryptPlaceInQueue(encryptedPlaceInQueue);
@@ -48,7 +47,6 @@ public class HashingTest {
     
     @Test (expected=InvalidKnownUserUrlException.class)
     public void testDecryptPlaceInQueue_null_arg() {
-        System.out.println("DecryptPlaceInQueue");
         String encryptedPlaceInQueue = null;
         Integer expResult = 7;
         Integer result = Hashing.decryptPlaceInQueue(encryptedPlaceInQueue);
@@ -57,12 +55,24 @@ public class HashingTest {
     
     @Test (expected=InvalidKnownUserUrlException.class)
     public void testDecryptPlaceInQueue_empty_arg() {
-        System.out.println("DecryptPlaceInQueue");
         String encryptedPlaceInQueue = "";
         Integer expResult = 7;
         Integer result = Hashing.decryptPlaceInQueue(encryptedPlaceInQueue);
         assertEquals(expResult, result);
     }
     
+    @Test
+    public void encryptPlaceInQueue_null_arg() {
+        Integer placeInQueue = null;
+        String result = Hashing.encryptPlaceInQueue(placeInQueue);
+        char[] resultChars = result.toCharArray();
+        assertEquals('0', resultChars[9]);
+        assertEquals('0', resultChars[26]);
+        assertEquals('0', resultChars[7]);
+        assertEquals('0', resultChars[20]);
+        assertEquals('0', resultChars[11]);
+        assertEquals('0', resultChars[3]);
+        assertEquals('0', resultChars[30]);
+    }
     
 }
