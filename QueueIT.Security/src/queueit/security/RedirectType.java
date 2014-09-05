@@ -6,7 +6,8 @@ public enum RedirectType {
     Safetynet("safetynet"), 
     AfterEvent("afterevent"), 
     Disabled("disabled"), 
-    DirectLink("directlink");
+    DirectLink("directlink"),
+    Idle("idle");
     
     private String text;
     
