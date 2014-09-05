@@ -2,7 +2,7 @@
 
 SET ANT_HOME=%CD%\apache-ant-1.9.3
 
-call apache-ant-1.9.3/bin/ant.bat -f "..\QueueIT.Security" clean jar
+apache-ant-1.9.3/bin/ant.bat -f "..\QueueIT.Security" clean jar
 
 IF %ERRORLEVEL% NEQ 0 GOTO Error
 
