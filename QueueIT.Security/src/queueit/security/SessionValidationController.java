@@ -9,7 +9,12 @@ import java.util.concurrent.Callable;
 
 public class SessionValidationController {
 
-    private static int defaultTicketExpiration = 0;
+    
+	// IMPORTANT !
+	// Never call request validation from error handling pages (e.g. error.jsp) which will cause users to get looped arround.
+	
+
+	private static int defaultTicketExpiration = 0;
     private static IValidateResultRepository defaultValidationResultRepository = new CookieValidateResultRepository();
     private static Callable<IValidateResultRepository> defaultValidationResultProviderFactory = new Callable<IValidateResultRepository>() {
         public IValidateResultRepository call() {

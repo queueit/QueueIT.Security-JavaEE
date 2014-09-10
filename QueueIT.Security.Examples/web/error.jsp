@@ -3,7 +3,10 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%
-    String queueName = request.getParameter("queuename");
+    // IMPORTANT !
+	// Never call request validation from error handling pages (e.g. error.jsp) which will cause users to get looped arround.
+	
+	String queueName = request.getParameter("queuename");
     URI targetUrl = new URI(request.getParameter("t"));
     IQueue queue = QueueFactory.createQueue(queueName);
     String cancelUrl = queue.getCancelUrl(targetUrl).toString();
