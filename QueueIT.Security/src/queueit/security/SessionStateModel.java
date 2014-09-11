@@ -10,4 +10,5 @@ public class SessionStateModel implements java.io.Serializable {
     public Date TimeStamp;
     public RedirectType RedirectType;
     public Integer PlaceInQueue;
+    public Date Expiration;
 }

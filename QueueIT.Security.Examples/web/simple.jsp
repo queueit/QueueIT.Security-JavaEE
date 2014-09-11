@@ -1,17 +1,33 @@
+<%@page import="java.net.URI"%>
 <%@page import="java.util.concurrent.Callable"%>
 <%@page import="queueit.security.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%
+    String cancelUrl = null;
+    String expireUrl = null;
+    
     try
     {
         IValidateResult result = SessionValidationController.validateRequest();
 
+        
         // Check if user must be enqueued
         if (result instanceof EnqueueResult)
         {
             response.sendRedirect(((EnqueueResult)result).getRedirectUrl().toString());
             return;
+        }
+            
+        if (result instanceof AcceptedConfirmedResult)
+        {
+            String currentUrl = request.getRequestURL().toString();
+            cancelUrl = result.getQueue().getCancelUrl(
+                    new URI(currentUrl.substring(0, currentUrl.indexOf("simple.jsp")) + "cancel.jsp?eventId=simple")).toString();
+            expireUrl = "expire.jsp?eventid=simple";
+            
+            request.setAttribute("cancelUrl", cancelUrl);
+            request.setAttribute("expireUrl", expireUrl);
         }
     }
     catch (ExpiredValidationException ex)
@@ -46,5 +62,7 @@
             Add controller code to the jsp files. The simple.jsp file 
             contains the minimum code required to set up the queue.</li>
     </ol>
+    <div><a href="${cancelUrl}">Cancel queue validation token</a></div>
+    <div><a href="${expireUrl}">Change expiration</a></div>
     </jsp:attribute>
 </t:master>

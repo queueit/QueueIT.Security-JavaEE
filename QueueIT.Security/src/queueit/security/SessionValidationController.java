@@ -375,6 +375,23 @@ public class SessionValidationController {
         }
     }
 
+    public static void cancel(AcceptedConfirmedResult validationResult)
+    {
+        try{
+            defaultValidationResultProviderFactory.call().cancel(validationResult.getQueue(), validationResult);
+        } catch (Exception ex) {
+            // ignore
+        }
+    }
+
+    public static void setExpiration(AcceptedConfirmedResult validationResult, Date expirationTime)
+    {
+        try {            
+            defaultValidationResultProviderFactory.call().setValidationResult(validationResult.getQueue(), validationResult, expirationTime);
+        } catch (Exception ex) {
+            // ignore
+        }
+    }
     private static void loadConfiguration() {       
         try {
             // Load the properties

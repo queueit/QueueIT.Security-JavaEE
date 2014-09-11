@@ -1,10 +1,38 @@
 package queueit.security;
 
+import java.util.Date;
+import java.util.Properties;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 public class SessionValidateResultRepository extends ValidateResultRepositoryBase {
             
+    static int defaultIdleExpiration = 180;
+    static int defaultDisabledExpiration = 180;
+    
+    static {       
+        loadConfiguration();
+    }
+    
+    private static void loadConfiguration()
+    { 
+        try {
+            // Load the properties
+            Properties props = QueueitProperties.getProperties("queueit.properties");
+            defaultIdleExpiration =  Integer.parseInt(props.getProperty("idleExpiration", "180"));
+            defaultDisabledExpiration =  Integer.parseInt(props.getProperty("disabledExpiration", "180"));
+        } catch (Exception e) {
+            // no need to handle exception
+        }    
+    }
+    
+    public static void configure(Integer idleExpiration, Integer disabledExpiration)
+    {
+        if (idleExpiration != null)
+            defaultIdleExpiration = idleExpiration;        
+        if (disabledExpiration != null)
+            defaultDisabledExpiration = disabledExpiration;        
+    }
     @Override
     public IValidateResult getValidationResult(IQueue queue) {
         HttpServletRequest request = RequestContext.getCurrentInstance().getRequest();
@@ -14,6 +42,9 @@ public class SessionValidateResultRepository extends ValidateResultRepositoryBas
         SessionStateModel model = (SessionStateModel)session.getAttribute(key);
         
         if (model == null)
+            return null;
+        
+        if (model.Expiration != null && model.Expiration.getTime() < (new Date()).getTime())
             return null;
         
         return new AcceptedConfirmedResult(
@@ -31,7 +62,12 @@ public class SessionValidateResultRepository extends ValidateResultRepositoryBas
 
     @Override
     public void setValidationResult(IQueue queue, IValidateResult validationResult) {
-        
+        this.setValidationResult(queue, validationResult, null);
+    }
+   
+    @Override
+    public void setValidationResult(IQueue queue, IValidateResult validationResult, Date expirationTime) {
+    
         if (validationResult instanceof AcceptedConfirmedResult)
         {
             AcceptedConfirmedResult confirmedResult = (AcceptedConfirmedResult)validationResult;
@@ -47,8 +83,21 @@ public class SessionValidateResultRepository extends ValidateResultRepositoryBas
             model.TimeStamp = confirmedResult.getKnownUser().getTimeStamp();
             model.RedirectType = confirmedResult.getKnownUser().getRedirectType();
             model.PlaceInQueue = confirmedResult.getKnownUser().getPlaceInQueue();
+            model.Expiration = expirationTime;
             
+            if (expirationTime != null)
+                model.Expiration = expirationTime;
+            else if (confirmedResult.getKnownUser().getRedirectType() == RedirectType.Disabled)
+                model.Expiration = new Date(System.currentTimeMillis()+(defaultDisabledExpiration*1000));
+            else if (confirmedResult.getKnownUser().getRedirectType() == RedirectType.Idle)
+                model.Expiration = new Date(System.currentTimeMillis()+(defaultIdleExpiration*1000));
+          
             session.setAttribute(key, model);
         }
     }       
+
+    @Override
+    public void cancel(IQueue queue, IValidateResult validationResult) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

@@ -5,6 +5,7 @@
 <%
     try
     {
+        
             IValidateResult result = SessionValidationController.validateRequest("advanced", new URI("http://www.google.com"));
 
             // Check if user must be enqueued
