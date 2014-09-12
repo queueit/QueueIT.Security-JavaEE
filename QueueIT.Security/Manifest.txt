@@ -1,4 +1,4 @@
 Implementation-Name: QueueIt/Security/
 Implementation-Title: QueueIt.Security
-Implementation-Version: 1.3.32
+Implementation-Version: 1.3.33
 Implementation-Vendor: Queue-it
