@@ -8,7 +8,6 @@ import javax.servlet.http.HttpSession;
 public class SessionValidateResultRepository extends ValidateResultRepositoryBase {
             
     static int defaultIdleExpiration = 180;
-    static int defaultDisabledExpiration = 180;
     
     static {       
         loadConfiguration();
@@ -20,18 +19,15 @@ public class SessionValidateResultRepository extends ValidateResultRepositoryBas
             // Load the properties
             Properties props = QueueitProperties.getProperties("queueit.properties");
             defaultIdleExpiration =  Integer.parseInt(props.getProperty("idleExpiration", "180"));
-            defaultDisabledExpiration =  Integer.parseInt(props.getProperty("disabledExpiration", "180"));
         } catch (Exception e) {
             // no need to handle exception
         }    
     }
     
-    public static void configure(Integer idleExpiration, Integer disabledExpiration)
+    public static void configure(Integer idleExpiration)
     {
         if (idleExpiration != null)
             defaultIdleExpiration = idleExpiration;        
-        if (disabledExpiration != null)
-            defaultDisabledExpiration = disabledExpiration;        
     }
     @Override
     public IValidateResult getValidationResult(IQueue queue) {
@@ -87,8 +83,6 @@ public class SessionValidateResultRepository extends ValidateResultRepositoryBas
             
             if (expirationTime != null)
                 model.Expiration = expirationTime;
-            else if (confirmedResult.getKnownUser().getRedirectType() == RedirectType.Disabled)
-                model.Expiration = new Date(System.currentTimeMillis()+(defaultDisabledExpiration*1000));
             else if (confirmedResult.getKnownUser().getRedirectType() == RedirectType.Idle)
                 model.Expiration = new Date(System.currentTimeMillis()+(defaultIdleExpiration*1000));
           

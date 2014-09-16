@@ -19,7 +19,6 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
     static String defaultCookieDomain;
     static int defaultCookieExpiration = 1200;
     static int defaultIdleExpiration = 180;
-    static int defaultDisabledExpiration = 180;
     
     static {       
         loadConfiguration();
@@ -33,13 +32,12 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
             defaultCookieDomain = props.getProperty("cookieDomain", null);
             defaultCookieExpiration =  Integer.parseInt(props.getProperty("cookieExpiration", "1200"));
             defaultIdleExpiration =  Integer.parseInt(props.getProperty("idleExpiration", "180"));
-            defaultDisabledExpiration =  Integer.parseInt(props.getProperty("disabledExpiration", "180"));
         } catch (Exception e) {
             // no need to handle exception
         }    
     }
     
-    public static void configure(String cookieDomain, Integer cookieExpiration, Integer idleExpiration, Integer disabledExpiration)
+    public static void configure(String cookieDomain, Integer cookieExpiration, Integer idleExpiration)
     {
         if (cookieDomain != null)
             defaultCookieDomain = cookieDomain;
@@ -47,8 +45,6 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
             defaultCookieExpiration = cookieExpiration;
         if (idleExpiration != null)
             defaultIdleExpiration = idleExpiration;        
-        if (disabledExpiration != null)
-            defaultDisabledExpiration = disabledExpiration;        
     }
     
     @Override
@@ -97,7 +93,7 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
         if (!expectedHash.equals(actualHash))
             return null;
         
-        if (redirectType != RedirectType.Disabled && redirectType != RedirectType.Idle)
+        if (redirectType != RedirectType.Idle)
             setCookie(queue, queueId, originalUrl, placeInQueue, redirectType, timeStamp, actualHash, null);
         
         return new AcceptedConfirmedResult(
@@ -155,8 +151,6 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
         
         if (expirationTime != null)
             expiration = (int)(expirationTime.getTime() - now.getTime());
-        else if (redirectType == RedirectType.Disabled)
-            expiration = defaultDisabledExpiration;
         else if (redirectType == RedirectType.Idle)
             expiration = defaultIdleExpiration;
         else
