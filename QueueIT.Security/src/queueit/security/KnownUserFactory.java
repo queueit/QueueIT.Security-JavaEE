@@ -113,6 +113,9 @@ public class KnownUserFactory {
         }
         
         URI url = urlProvider.getUrl();
+        if (url == null)
+            throw new InvalidKnownUserUrlException();
+        
         URI originalUrl = urlProvider.getOriginalUrl(querystringPrefix);
         
         try {
