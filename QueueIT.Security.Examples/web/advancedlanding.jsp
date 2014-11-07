@@ -12,6 +12,6 @@
         Advanced
     </jsp:attribute>
     <jsp:attribute name="body">
-        <a href="index.aspx">Back To Home</a> <a href="${queueUrl}">Go to queue</a>
+        <a href="index.jsp">Back To Home</a> <a href="${queueUrl}">Go to queue</a>
     </jsp:attribute>
 </t:master>
