@@ -5,11 +5,11 @@
 <%
     IQueue queue = QueueFactory.createQueue("advanced");
     String targetUrl = request.getParameter("t");
-    request.setAttribute("queueUrl", queue.getQueueUrl(new URI(targetUrl)));
+    request.setAttribute("queueUrl", queue.getQueueUrl(targetUrl));
 %>
 <t:master>
     <jsp:attribute name="title">
-        Advanced
+        Advanced Queue Landing Page
     </jsp:attribute>
     <jsp:attribute name="body">
         <a href="index.jsp">Back To Home</a> <a href="${queueUrl}">Go to queue</a>

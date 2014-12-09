@@ -7,15 +7,15 @@
 	// Never call request validation from error handling pages (e.g. error.jsp) which will cause users to get looped arround.
 	
 	String queueName = request.getParameter("queuename");
-    URI targetUrl = new URI(request.getParameter("t"));
+    String targetUrl = request.getParameter("t");
     IQueue queue = QueueFactory.createQueue(queueName);
-    String cancelUrl = queue.getCancelUrl(targetUrl).toString();
+    String cancelUrl = queue.getCancelUrl(targetUrl);
     
     request.setAttribute("cancelUrl", cancelUrl);
 %>
 <t:master>
     <jsp:attribute name="title">
-        Queue-it
+        Error Page
     </jsp:attribute>
     <jsp:attribute name="body">
         <div>An error occured.</div>

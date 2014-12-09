@@ -12,7 +12,7 @@
         // Check if user must be enqueued
         if (result instanceof EnqueueResult)
         {
-            response.sendRedirect(((EnqueueResult)result).getRedirectUrl().toString());
+            response.sendRedirect(((EnqueueResult)result).getRedirectUrl());
             return;
         }
     }
@@ -31,7 +31,7 @@
 %>
 <t:master>
     <jsp:attribute name="title">
-        Queue-it
+        Code Only Queue Configuration
     </jsp:attribute>
     <jsp:attribute name="body">
     <h3>Setting up the queue:</h3>

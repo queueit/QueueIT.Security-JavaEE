@@ -1,19 +1,8 @@
 package queueit.security;
 
-import queueit.security.KnownUserFactory;
-import queueit.security.InvalidKnownUserUrlException;
-import queueit.security.RedirectType;
-import queueit.security.IKnownUser;
-import queueit.security.InvalidKnownUserHashException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;
@@ -75,13 +64,9 @@ public class KnownUserFactoryTest {
                 + "&" + querystringPrefix + "h=" + hash;
 
         MockUrlProvider urlProvider = null; 
-        try {
-            urlProvider = new MockUrlProvider(new URI(urlWithHash), expectedQueueId, placeInQueueEncrypted, String.valueOf(unixTimestamp), expectedEventId, expectedCustomerId, new URI(expectedOriginalUrl), expectedRedirectType.toString());
-        } catch (Exception ex) {
-            //ignore
-        }
-            
         
+        urlProvider = new MockUrlProvider(urlWithHash, expectedQueueId, placeInQueueEncrypted, String.valueOf(unixTimestamp), expectedEventId, expectedCustomerId, expectedOriginalUrl, expectedRedirectType.toString());
+
         //Act
         IKnownUser knownUser = KnownUserFactory.verifyMd5Hash(SharedSecreteEventKey, urlProvider, querystringPrefix);
 
@@ -122,11 +107,8 @@ public class KnownUserFactoryTest {
         
         MockUrlProvider urlProvider = null;
         
-        try {
-            urlProvider = new MockUrlProvider(new URI(urlWithHash), expectedQueueId, "5809edd9-9590-46a4-b92d-09938a93775f", String.valueOf(unixTimestamp), expectedEventId, expectedCustomerId, new URI(expectedOriginalUrl), expectedRedirectType.toString());
-        } catch (Exception ex) {
-            //ignore
-        }
+
+        urlProvider = new MockUrlProvider(urlWithHash, expectedQueueId, "5809edd9-9590-46a4-b92d-09938a93775f", String.valueOf(unixTimestamp), expectedEventId, expectedCustomerId, expectedOriginalUrl, expectedRedirectType.toString());
         
         //Act
         try
@@ -220,7 +202,7 @@ public class KnownUserFactoryTest {
 
         MockUrlProvider urlProvider = null; 
         try {
-            urlProvider = new MockUrlProvider(new URI(urlWithHash), expectedQueueId, placeInQueueEncrypted, String.valueOf(unixTimestamp), expectedEventId, expectedCustomerId, new URI(expectedOriginalUrl), expectedRedirectType.toString());
+            urlProvider = new MockUrlProvider(urlWithHash, expectedQueueId, placeInQueueEncrypted, String.valueOf(unixTimestamp), expectedEventId, expectedCustomerId, expectedOriginalUrl, expectedRedirectType.toString());
         } catch (Exception ex) {
             //ignore
         }

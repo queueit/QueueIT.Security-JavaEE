@@ -6,12 +6,12 @@
     try
     {
         
-            IValidateResult result = SessionValidationController.validateRequest("advanced", new URI("http://www.google.com"));
+            IValidateResult result = SessionValidationController.validateRequest(QueueFactory.createQueue("advanced"), "http://www.google.com");
 
             // Check if user must be enqueued
             if (result instanceof EnqueueResult)
             {
-                response.sendRedirect(((EnqueueResult)result).getRedirectUrl().toString());
+                response.sendRedirect(((EnqueueResult)result).getRedirectUrl());
                 return;
             }
 
@@ -46,7 +46,7 @@
 %>
 <t:master>
     <jsp:attribute name="title">
-        Advanced
+        Advanced Queue Configuration
     </jsp:attribute>
     <jsp:attribute name="body">
         <h3>Setting up the queue:</h3>

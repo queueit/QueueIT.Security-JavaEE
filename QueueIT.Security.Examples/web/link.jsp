@@ -1,20 +1,18 @@
-<%@page import="java.net.URI"%>
-<%@page import="javax.ws.rs.core.UriBuilder"%>
 <%@page import="queueit.security.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <%
     IQueue queue = QueueFactory.createQueue("link");
         
-    URI targetUrl = new URI(request.getRequestURL().toString().replaceAll("link.jsp", "linktarget.jsp"));
-    String queueUrl = queue.getQueueUrl(targetUrl).toString();
+    String targetUrl = request.getRequestURL().toString().replaceAll("link.jsp", "linktarget.jsp");
+    String queueUrl = queue.getQueueUrl(targetUrl);
     
     request.setAttribute("queueUrl", queueUrl);
 %>
 
 <t:master>
     <jsp:attribute name="title">
-        Link
+        Link Queue Configuration
     </jsp:attribute>
     <jsp:attribute name="body">
         <h3>Setting up the queue:</h3>

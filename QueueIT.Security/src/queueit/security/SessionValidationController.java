@@ -1,7 +1,4 @@
 package queueit.security;
-
-import java.io.InputStream;
-import java.net.URI;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
@@ -45,7 +42,7 @@ public class SessionValidationController {
         return validateRequestDefaultQueue(includeTargetUrl, null, null, null, null, null);
     }
 
-    public static IValidateResult validateRequest(URI targetUrl) {
+    public static IValidateResult validateRequest(String targetUrl) {
         return validateRequestDefaultQueue(null, targetUrl, null, null, null, null);
     }
 
@@ -53,7 +50,7 @@ public class SessionValidationController {
         return validateRequestDefaultQueue(includeTargetUrl, null, sslEnabled, null, null, null);
     }
 
-    public static IValidateResult validateRequest(URI targetUrl, Boolean sslEnabled) {
+    public static IValidateResult validateRequest(String targetUrl, Boolean sslEnabled) {
         return validateRequestDefaultQueue(null, targetUrl, sslEnabled, null, null, null);
     }
 
@@ -65,7 +62,7 @@ public class SessionValidationController {
     }
 
     public static IValidateResult validateRequest(
-            URI targetUrl,
+            String targetUrl,
             Boolean sslEnabled,
             String domainAlias) {
         return validateRequestDefaultQueue(null, targetUrl, sslEnabled, domainAlias, null, null);
@@ -80,7 +77,7 @@ public class SessionValidationController {
     }
 
     public static IValidateResult validateRequest(
-            URI targetUrl,
+            String targetUrl,
             Boolean sslEnabled,
             String domainAlias,
             Locale language) {
@@ -97,7 +94,7 @@ public class SessionValidationController {
     }
 
     public static IValidateResult validateRequest(
-            URI targetUrl,
+            String targetUrl,
             Boolean sslEnabled,
             String domainAlias,
             Locale language,
@@ -107,7 +104,7 @@ public class SessionValidationController {
 
     private static IValidateResult validateRequestDefaultQueue(
             Boolean includeTargetUrl,
-            URI targetUrl,
+            String targetUrl,
             Boolean sslEnabled,
             String domainAlias,
             Locale language,
@@ -124,61 +121,59 @@ public class SessionValidationController {
                 layoutName != null ? layoutName : queue.getDefaultLayoutName());
     }
 
-    public static IValidateResult validateRequest(String queueName) {
-        return validateRequestQueueName(queueName, null, null, null, null, null, null);
+    public static IValidateResult validateRequest(IQueue queue) {
+        return validateRequestQueue(queue, null, null, null, null, null, null);
     }
 
-    public static IValidateResult validateRequest(String queueName, Boolean includeTargetUrl) {
-        return validateRequestQueueName(queueName, includeTargetUrl, null, null, null, null, null);
+    public static IValidateResult validateRequest(IQueue queue, Boolean includeTargetUrl) {
+        return validateRequestQueue(queue, includeTargetUrl, null, null, null, null, null);
     }
 
-    public static IValidateResult validateRequest(String queueName, URI targetUrl) {
-        return validateRequestQueueName(queueName, null, targetUrl, null, null, null, null);
+    public static IValidateResult validateRequest(IQueue queue, String targetUrl) {
+        return validateRequestQueue(queue, null, targetUrl, null, null, null, null);
     }
 
     public static IValidateResult validateRequest(
-            String queueName,
+            IQueue queue,
             Boolean includeTargetUrl,
             Boolean sslEnabled) {
-        return validateRequestQueueName(queueName, includeTargetUrl, null, sslEnabled, null, null, null);
+        return validateRequestQueue(queue, includeTargetUrl, null, sslEnabled, null, null, null);
     }
 
     public static IValidateResult validateRequest(
-            String queueName,
-            URI targetUrl,
+            IQueue queue,
+            String targetUrl,
             Boolean sslEnabled) {
-        return validateRequestQueueName(queueName, null, targetUrl, sslEnabled, null, null, null);
+        return validateRequestQueue(queue, null, targetUrl, sslEnabled, null, null, null);
     }
 
     public static IValidateResult validateRequest(
-            String queueName,
+            IQueue queue,
             Boolean includeTargetUrl,
             Boolean sslEnabled,
             String domainAlias) {
-        return validateRequestQueueName(queueName, includeTargetUrl, null, sslEnabled, domainAlias, null, null);
+        return validateRequestQueue(queue, includeTargetUrl, null, sslEnabled, domainAlias, null, null);
     }
 
     public static IValidateResult validateRequest(
-            String queueName,
-            URI targetUrl,
+            IQueue queue,
+            String targetUrl,
             Boolean sslEnabled,
             String domainAlias) {
-        return validateRequestQueueName(queueName, null, targetUrl, sslEnabled, domainAlias, null, null);
+        return validateRequestQueue(queue, null, targetUrl, sslEnabled, domainAlias, null, null);
     }
 
-    private static IValidateResult validateRequestQueueName(
-            String queueName,
+    private static IValidateResult validateRequestQueue(
+            IQueue queue,
             Boolean includeTargetUrl,
-            URI targetUrl,
+            String targetUrl,
             Boolean sslEnabled,
             String domainAlias,
             Locale language,
             String layoutName) {
-        if (queueName == null || queueName.isEmpty()) {
-            throw new IllegalArgumentException("Queue name is required");
+        if (queue == null) {
+            throw new IllegalArgumentException("Queue is required");
         }
-
-        Queue queue = (Queue) QueueFactory.createQueue(queueName);
 
         return validateRequest(
                 queue,
@@ -206,7 +201,7 @@ public class SessionValidationController {
     public static IValidateResult validateRequest(
             String customerId,
             String eventId,
-            URI targetUrl) {
+            String targetUrl) {
         return validateRequestFromIds(customerId, eventId, null, targetUrl, null, null, null, null);
     }
 
@@ -221,7 +216,7 @@ public class SessionValidationController {
     public static IValidateResult validateRequest(
             String customerId,
             String eventId,
-            URI targetUrl,
+            String targetUrl,
             Boolean sslEnabled) {
         return validateRequestFromIds(customerId, eventId, null, targetUrl, sslEnabled, null, null, null);
     }
@@ -238,7 +233,7 @@ public class SessionValidationController {
     public static IValidateResult validateRequest(
             String customerId,
             String eventId,
-            URI targetUrl,
+            String targetUrl,
             Boolean sslEnabled,
             String domainAlias) {
         return validateRequestFromIds(customerId, eventId, null, targetUrl, sslEnabled, domainAlias, null, null);
@@ -257,7 +252,7 @@ public class SessionValidationController {
     public static IValidateResult validateRequest(
             String customerId,
             String eventId,
-            URI targetUrl,
+            String targetUrl,
             Boolean sslEnabled,
             String domainAlias,
             Locale language) {
@@ -278,7 +273,7 @@ public class SessionValidationController {
     public static IValidateResult validateRequest(
             String customerId,
             String eventId,
-            URI targetUrl,
+            String targetUrl,
             Boolean sslEnabled,
             String domainAlias,
             Locale language,
@@ -290,7 +285,7 @@ public class SessionValidationController {
             String customerId,
             String eventId,
             Boolean includeTargetUrl,
-            URI targetUrl,
+            String targetUrl,
             Boolean sslEnabled,
             String domainAlias,
             Locale language,
@@ -302,7 +297,7 @@ public class SessionValidationController {
             throw new IllegalArgumentException("Event ID is required");
         }
 
-        Queue queue = (Queue) QueueFactory.createQueue(customerId.toLowerCase(), eventId.toLowerCase());
+        IQueue queue = QueueFactory.createQueue(customerId.toLowerCase(), eventId.toLowerCase());
 
         return validateRequest(
                 queue,
@@ -315,10 +310,10 @@ public class SessionValidationController {
     }
 
     private static IValidateResult validateRequest(
-            Queue queue,
+            IQueue queue,
             Boolean sslEnabled,
             Boolean includeTargetUrl,
-            URI targetUrl,
+            String targetUrl,
             String domainAlias,
             Locale language,
             String layoutName) {
@@ -338,7 +333,7 @@ public class SessionValidationController {
         }
         try {
             IKnownUser knownUser = KnownUserFactory.verifyMd5Hash();
-            URI landingPage = null;
+            String landingPage = null;
             if (knownUser == null) {
                 if (targetUrl != null) {
                     landingPage = queue.getLandingPageUrl(targetUrl);

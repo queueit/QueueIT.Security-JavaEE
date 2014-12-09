@@ -1,28 +1,23 @@
 package queueit.security;
 
-import queueit.security.IKnownUserUrlProvider;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MockUrlProvider implements IKnownUserUrlProvider {
     
-    private URI url;
+    private String url;
     private String queueId;
     private String placeInQueue;
     private String timeStamp;
     private String eventId;
     private String customerId;
-    private URI originalUrl;
+    private String originalUrl;
     private String redirectType;
 
     public MockUrlProvider(
-            URI url, String queueId, String placeInQueue, String timeStamp, String eventId, String customerId, URI originalUrl, String redirectType) {
+            String url, String queueId, String placeInQueue, String timeStamp, String eventId, String customerId, String originalUrl, String redirectType) {
         this.url = url;
         this.queueId = queueId;
         this.placeInQueue = placeInQueue;
@@ -33,7 +28,7 @@ public class MockUrlProvider implements IKnownUserUrlProvider {
         this.redirectType = redirectType;
     }
     
-    public MockUrlProvider(URI requestUrl, URI originalUrl) {
+    public MockUrlProvider(String requestUrl, String originalUrl) {
         Map<String, String> parameters = getUrlParameters(requestUrl.toString());
         
         this.url = requestUrl;
@@ -47,7 +42,7 @@ public class MockUrlProvider implements IKnownUserUrlProvider {
     }
     
     @Override
-    public URI getUrl() {
+    public String getUrl() {
         return this.url;
     }
 
@@ -77,7 +72,7 @@ public class MockUrlProvider implements IKnownUserUrlProvider {
     }
 
     @Override
-    public URI getOriginalUrl(String queryStringPrefix) {
+    public String getOriginalUrl(String queryStringPrefix) {
         return this.originalUrl;
     }
 

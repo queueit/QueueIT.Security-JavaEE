@@ -1,13 +1,13 @@
 package queueit.security;
 
-import java.io.InputStream;
-import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.Callable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class KnownUserFactory {
 
@@ -112,11 +112,11 @@ public class KnownUserFactory {
             querystringPrefix = "";
         }
         
-        URI url = urlProvider.getUrl();
-        if (url == null)
-            throw new InvalidKnownUserUrlException();
+        String url = urlProvider.getUrl();
         
-        URI originalUrl = urlProvider.getOriginalUrl(querystringPrefix);
+        validateUrl(url);
+        
+        String originalUrl = urlProvider.getOriginalUrl(querystringPrefix);
         
         try {
             UUID queueId = parseQueueId(urlProvider.getQueueId(querystringPrefix));
@@ -218,9 +218,9 @@ public class KnownUserFactory {
         return querystringParms.get(querystringPrefix.concat("e")).get(0);
     }
 
-    private static String getExpectedHash(URI url)
+    private static String getExpectedHash(String url)
     {
-        String fullUrl = url.toString();
+        String fullUrl = url;
 
         if (fullUrl == null || fullUrl.length() < 32)
             throw new InvalidKnownUserHashException();
@@ -228,12 +228,24 @@ public class KnownUserFactory {
         return fullUrl.substring(fullUrl.length() - 32);
     }
 
-    private static void validateHash(URI requestUrl, String sharedEventKey, String expectedHash) {
-        String stringToHash = requestUrl.toString().substring(0, requestUrl.toString().length() - 32) + sharedEventKey; //Remove hash value and add SharedEventKey
+    private static void validateHash(String requestUrl, String sharedEventKey, String expectedHash) {
+        String stringToHash = requestUrl.substring(0, requestUrl.length() - 32) + sharedEventKey; //Remove hash value and add SharedEventKey
         String actualHash = Hashing.getMd5Hash(stringToHash);
 
         if (!actualHash.equals(expectedHash)) {
             throw new InvalidKnownUserHashException();
         }
+    }
+
+    private static void validateUrl(String url) {
+        if (url == null)
+            throw new InvalidKnownUserUrlException();
+        if (url.isEmpty())
+            throw new InvalidKnownUserUrlException();
+        
+        Pattern pattern = Pattern.compile("^https?://.*$");
+        Matcher matcher = pattern.matcher(url);
+        if (!matcher.matches())
+            throw new InvalidKnownUserUrlException();
     }
 }

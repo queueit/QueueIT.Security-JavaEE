@@ -1,7 +1,6 @@
 package queueit.security;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
@@ -60,6 +59,7 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
         String timeStamp = null;
         String actualHash = null;
         Integer placeInQueue = 0;
+        String expires = null;
         
         Cookie[] cookies = request.getCookies();
         for (int i = 0; i < cookies.length; i++)
@@ -76,9 +76,25 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
                 timeStamp = cookies[i].getValue();
             if (cookies[i].getName().equals(key + "-Hash"))
                 actualHash = cookies[i].getValue();
+            if (cookies[i].getName().equals(key + "-Expires"))
+                expires = cookies[i].getValue();
         }
         
-        if (queueId == null || originalUrl == null || encryptedPlaceInQueue == null || redirectType == null || timeStamp == null)
+        if (queueId == null || originalUrl == null || encryptedPlaceInQueue == null || redirectType == null || timeStamp == null || expires == null)
+            return null;
+        
+        Date expirationTime = new Date();
+        
+        try  
+        {  
+            expirationTime.setTime(Long.parseLong(expires));        
+        }  
+        catch(Exception ex)  
+        {  
+            return null;    
+        }  
+        
+        if (expirationTime.getTime() < (new Date()).getTime())
             return null;
         
         try
@@ -88,13 +104,17 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
             return null;
         }
             
-        String expectedHash = generateHash(queueId, originalUrl, placeInQueue, redirectType.toString(), timeStamp);
+        String expectedHash = generateHash(queueId, originalUrl, placeInQueue, redirectType.toString(), timeStamp, expirationTime);
         
         if (!expectedHash.equals(actualHash))
             return null;
         
         if (redirectType != RedirectType.Idle)
-            setCookie(queue, queueId, originalUrl, placeInQueue, redirectType, timeStamp, actualHash, null);
+        {
+            Date newExpirationTime = new Date((new Date()).getTime() + (defaultCookieExpiration * 1000));
+            String newHash = generateHash(queueId, originalUrl, placeInQueue, redirectType.toString(), timeStamp, newExpirationTime);
+            setCookie(queue, queueId, originalUrl, placeInQueue, redirectType, timeStamp, newHash, newExpirationTime);
+        }
         
         return new AcceptedConfirmedResult(
                 queue, 
@@ -105,7 +125,7 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
                     queue.getCustomerId(), 
                     queue.getEventId(), 
                     redirectType, 
-                    URI.create(originalUrl)), 
+                    originalUrl), 
                 false);
     }
 
@@ -127,7 +147,14 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
             RedirectType redirectType = confirmedResult.getKnownUser().getRedirectType();
             Long timeStamp = confirmedResult.getKnownUser().getTimeStamp().getTime() / 1000;
             
-            String hash = generateHash(queueId, originalUrl, placeInQueue, redirectType.toString(), timeStamp.toString());
+        if (expirationTime == null)
+        {
+
+            expirationTime = new Date((new Date()).getTime() + (redirectType == RedirectType.Idle 
+                    ? defaultIdleExpiration * 1000
+                    : defaultCookieExpiration * 1000));
+        }
+            String hash = generateHash(queueId, originalUrl, placeInQueue, redirectType.toString(), timeStamp.toString(), expirationTime);
 
             setCookie(queue, queueId, originalUrl, placeInQueue, redirectType, timeStamp.toString(), hash, expirationTime);
         }                
@@ -146,15 +173,7 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
         String key = generateKey(queue.getCustomerId(), queue.getEventId());
         HttpServletResponse response = RequestContext.getCurrentInstance().getResponse();
         
-        int expiration;
-        Date now = new Date();
-        
-        if (expirationTime != null)
-            expiration = (int)(expirationTime.getTime() - now.getTime());
-        else if (redirectType == RedirectType.Idle)
-            expiration = defaultIdleExpiration;
-        else
-            expiration = defaultCookieExpiration;
+        int expiration = (int)(expirationTime.getTime() - (new Date()).getTime()) / 1000;     
 
         this.clearExistingCookies(response, key, expiration);
         
@@ -164,6 +183,7 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
         addCookie(new Cookie(key + "-RedirectType", redirectType.toString()), response, expiration);
         addCookie(new Cookie(key + "-TimeStamp", timeStamp.toString()), response, expiration);
         addCookie(new Cookie(key + "-Hash", hash), response, expiration);           
+        addCookie(new Cookie(key + "-Expires", String.valueOf(expirationTime.getTime())), response, expiration); 
     }
     
     private void addCookie(Cookie cookie, HttpServletResponse response, int maxAge)
@@ -203,10 +223,18 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
         }
     }
 
-    private String generateHash(String queueId, String originalUrl, Integer placeInQueue, String redirectType, String timeStamp) {
+    private String generateHash(String queueId, String originalUrl, Integer placeInQueue, String redirectType, String timeStamp, Date expirationTime) {
         try {
             StringBuilder sb = new StringBuilder();
-            sb.append(queueId).append(originalUrl).append(placeInQueue != null ? placeInQueue.toString() : "0").append(redirectType).append(timeStamp).append(KnownUserFactory.getSecretKey());
+            sb
+                .append(queueId)
+                .append(originalUrl)
+                .append(placeInQueue != null ? placeInQueue.toString() : "0")
+                .append(redirectType)
+                .append(timeStamp)
+                .append(expirationTime.getTime())
+                .append(KnownUserFactory.getSecretKey())
+                .append(this.getFingerprint());
                     
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(sb.toString().getBytes("UTF-8"));
@@ -225,5 +253,13 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
     @Override
     public void cancel(IQueue queue, IValidateResult validationResult) {
         this.setValidationResult(queue, validationResult, new Date(System.currentTimeMillis()-24*60*60*1000));
+    }
+
+    private Object getFingerprint() {
+        HttpServletRequest request = RequestContext.getCurrentInstance().getRequest();
+        if (request == null)
+            return "";
+        
+        return request.getHeader("User-Agent") + request.getHeader("Accept") + request.getHeader("Accept-Encoding") + request.getHeader("Accept-Language");
     }
 }

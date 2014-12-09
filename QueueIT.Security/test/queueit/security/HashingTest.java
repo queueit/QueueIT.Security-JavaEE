@@ -1,7 +1,5 @@
 package queueit.security;
 
-import queueit.security.InvalidKnownUserUrlException;
-import queueit.security.Hashing;
 import org.junit.After;
 import org.junit.AfterClass;
 import static org.junit.Assert.*;

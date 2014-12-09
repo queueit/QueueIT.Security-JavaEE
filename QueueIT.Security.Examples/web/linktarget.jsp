@@ -1,7 +1,5 @@
 <%@page import="java.net.URLEncoder"%>
 <%@page import="java.util.Date"%>
-<%@page import="java.net.URI"%>
-<%@page import="javax.ws.rs.core.UriBuilder"%>
 <%@page import="queueit.security.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
@@ -30,7 +28,7 @@
 
 <t:master>
     <jsp:attribute name="title">
-        Link
+        Link Target
     </jsp:attribute>
     <jsp:attribute name="body">
 	<h3>Setting up the queue:</h3>

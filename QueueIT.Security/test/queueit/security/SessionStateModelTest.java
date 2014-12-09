@@ -4,11 +4,8 @@ package queueit.security;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.net.URI;
 import java.util.Date;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.junit.*;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -34,7 +31,7 @@ public class SessionStateModelTest {
     @Test
     public void SessionStateModel_Serialize_Test(){
         SessionStateModel model = new SessionStateModel();
-        model.OriginalUrl = URI.create("http://www.queue-it.net");
+        model.OriginalUrl = "http://www.queue-it.net";
         model.PlaceInQueue = 1574;
         model.QueueId = UUID.randomUUID();
         model.RedirectType = RedirectType.AfterEvent;

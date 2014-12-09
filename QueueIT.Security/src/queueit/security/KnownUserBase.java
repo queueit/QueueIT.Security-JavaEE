@@ -1,21 +1,15 @@
 package queueit.security;
 
-import java.net.URI;
 import java.util.Date;
 import java.util.UUID;
 
-/**
- *
- * @author Queue-it
- * last update: 2012-10-25
- */
 abstract class KnownUserBase implements IKnownUser {
     protected UUID queueId;
     protected Integer placeInQueue;
     protected Date timeStamp;
     protected String customerId;
     protected String eventId;
-    protected URI originalUrl;
+    protected String originalUrl;
     protected RedirectType redirectType;
     
     @Override
@@ -44,7 +38,7 @@ abstract class KnownUserBase implements IKnownUser {
     }
 
     @Override
-    public URI getOriginalUrl() {
+    public String getOriginalUrl() {
         return this.originalUrl;
     }
 

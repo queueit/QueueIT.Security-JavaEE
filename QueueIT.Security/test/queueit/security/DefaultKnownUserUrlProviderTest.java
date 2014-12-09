@@ -4,7 +4,6 @@
  */
 package queueit.security;
 
-import java.net.URI;
 import javax.servlet.http.HttpServletRequest;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -13,10 +12,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-/**
- *
- * @author MALA
- */
 public class DefaultKnownUserUrlProviderTest {
     
     public DefaultKnownUserUrlProviderTest() {
@@ -48,7 +43,21 @@ public class DefaultKnownUserUrlProviderTest {
         RequestContext.newInstance(request, null);
         
         DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider();
-        URI actualUrl = provider.getUrl();
+        String actualUrl = provider.getUrl();
+        
+        assertEquals(expectedUrl, actualUrl.toString());       
+    }
+    
+    @Test
+    public void DefaultKnownUserUrlProvider_GetUrl_SpecialChars_Test() {
+        
+        String expectedUrl = "http://some.url/somepath?__utma={646484654654}&__utmb=345345.345:34543&__utmc=1&__utmx=-&__utmz=345345.567.46..56.utmcsr=google|utmccn=%28organic%29|utmcmd=organic|utmctr=%28not%20provided%29&__utmv=-&__utmk=234324";
+        
+        HttpServletRequest request = new MockHttpServletRequest(expectedUrl);
+        RequestContext.newInstance(request, null);
+        
+        DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider();
+        String actualUrl = provider.getUrl();
         
         assertEquals(expectedUrl, actualUrl.toString());       
     }
@@ -61,7 +70,7 @@ public class DefaultKnownUserUrlProviderTest {
         HttpServletRequest request = new MockHttpServletRequest(expectedUrl);
         
         DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider(request);
-        URI actualUrl = provider.getUrl();
+        String actualUrl = provider.getUrl();
         
         assertEquals(expectedUrl, actualUrl.toString());       
     }

@@ -1,6 +1,5 @@
 package queueit.security;
 
-import java.net.URI;
 import java.util.Date;
 import java.util.UUID;
 
@@ -16,6 +15,6 @@ public interface IKnownUser {
     public Date getTimeStamp();
     public String getCustomerId();
     public String getEventId();
-    public URI getOriginalUrl();
+    public String getOriginalUrl();
     public RedirectType getRedirectType();
 }

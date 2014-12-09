@@ -1,7 +1,5 @@
 package queueit.security;
 
-import java.io.InputStream;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -40,7 +38,7 @@ public class QueueFactory {
                 props.getProperty("customerId"),
                 props.getProperty("eventId"),
                 props.getProperty("domainAlias", null),
-                landingPage == null ? null : new URI(landingPage),
+                landingPage == null ? null : landingPage,
                 Boolean.valueOf(props.getProperty("useSsl", null)),
                 Boolean.valueOf(props.getProperty("includeTargetUrl", null)),
                 language == null || language.isEmpty() ? null : new Locale(language),
@@ -75,7 +73,7 @@ public class QueueFactory {
         return customerId + "_" + eventId;
     }
     
-    private static Queue instantiateQueue(String customerId, String eventId, String domainAlias, URI landingPage, 
+    private static Queue instantiateQueue(String customerId, String eventId, String domainAlias, String landingPage, 
         Boolean sslEnabled, Boolean includeTargetUrl, Locale language, String layoutName)
     {
         String key = generateKey(customerId, eventId);

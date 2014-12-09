@@ -2,17 +2,11 @@ package queueit.security;
 
 import java.util.Locale;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
-import queueit.security.uribuilder.UriComponents;
 
 import queueit.security.uribuilder.UriComponentsBuilder;
 
@@ -22,9 +16,9 @@ class Queue implements IQueue {
     private boolean defaultIncludeTargetUrl;
     private String defaultLayoutName;
     private Locale defaultLanguage;
-    private URI defaultQueueUrl;
-    private URI defaultLandingPageUrl;
-    private URI defaultCancelUrl;
+    private String defaultQueueUrl;
+    private String defaultLandingPageUrl;
+    private String defaultCancelUrl;
     private String eventId;
     private String customerId;
     
@@ -32,7 +26,7 @@ class Queue implements IQueue {
             String customerId, 
             String eventId, 
             String domainAlias, 
-            URI landingPage, 
+            String landingPage, 
             Boolean sslEnabled, 
             Boolean includeTargetUrl,
             Locale language,
@@ -42,23 +36,25 @@ class Queue implements IQueue {
         this.defaultLanguage = language;
         this.defaultLayoutName = layoutName;
         
-        this.defaultQueueUrl = generateQueueUrl(sslEnabled, domainAlias, language, layoutName).build().toUri();
-        this.defaultCancelUrl = generateCancelUrl(sslEnabled, domainAlias).build().toUri();
+        this.defaultQueueUrl = generateQueueUrl(sslEnabled, domainAlias, language, layoutName).build().toUriString();
+        this.defaultCancelUrl = generateCancelUrl(sslEnabled, domainAlias).build().toUriString();
 
         this.defaultDomainAlias = domainAlias;
         this.defaultLandingPageUrl = landingPage;
-        if (this.defaultLandingPageUrl != null && !this.defaultLandingPageUrl.isAbsolute())
-        {
+        if (this.defaultLandingPageUrl != null && !this.defaultLandingPageUrl.startsWith("http"))
+        {          
             HttpServletRequest request = RequestContext.getCurrentInstance().getRequest();
             if (request != null) {
-                URI currentUrl = URI.create(request.getRequestURL().toString());
-                UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUri(currentUrl);
-
-                uriBuilder.uri(this.defaultLandingPageUrl);
-                if (uriBuilder.build().getScheme() == null)
-                    uriBuilder.scheme(currentUrl.getScheme());
+                String currentUrl = request.getRequestURL().toString();
                 
-                this.defaultLandingPageUrl = uriBuilder.build(true).toUri();
+                Pattern pattern = Pattern.compile("^(https?://[^/]+)", Pattern.CASE_INSENSITIVE);
+                Matcher matcher = pattern.matcher(currentUrl);
+                
+                if (matcher.find()) 
+                {
+                    this.defaultLandingPageUrl = 
+                        currentUrl.substring(0, matcher.end()) + (this.defaultLandingPageUrl.startsWith("/") ? this.defaultLandingPageUrl : ("/" + this.defaultLandingPageUrl));
+                }
             }
         }
         this.defaultSslEnabled = sslEnabled;
@@ -73,81 +69,81 @@ class Queue implements IQueue {
         return customerId;
     }
     
-    public URI getQueueUrl() {
+    public String getQueueUrl() {
         return getQueueUrlFromCurrentUrl(null, null, null, null, null);
     }
     
-    public URI getQueueUrl(Boolean includeTargetUrl) {
+    public String getQueueUrl(Boolean includeTargetUrl) {
         return getQueueUrlFromCurrentUrl(includeTargetUrl, null, null, null, null);
     }
     
-    public URI getQueueUrl(Boolean includeTargetUrl, Boolean sslEnabled) {
+    public String getQueueUrl(Boolean includeTargetUrl, Boolean sslEnabled) {
         return getQueueUrlFromCurrentUrl(includeTargetUrl, sslEnabled, null, null, null);
     }
     
-    public URI getQueueUrl(Boolean includeTargetUrl, Boolean sslEnabled, String domainAlias) {
+    public String getQueueUrl(Boolean includeTargetUrl, Boolean sslEnabled, String domainAlias) {
         return getQueueUrlFromCurrentUrl(includeTargetUrl, sslEnabled, domainAlias, null, null);
     }
 
-    public URI getQueueUrl(Boolean includeTargetUrl, Boolean sslEnabled, String domainAlias, Locale language) {
+    public String getQueueUrl(Boolean includeTargetUrl, Boolean sslEnabled, String domainAlias, Locale language) {
         return getQueueUrlFromCurrentUrl(includeTargetUrl, sslEnabled, domainAlias, language, null);
     }
         
-    public URI getQueueUrl(Boolean includeTargetUrl, Boolean sslEnabled, String domainAlias, Locale language, String layoutName) {
+    public String getQueueUrl(Boolean includeTargetUrl, Boolean sslEnabled, String domainAlias, Locale language, String layoutName) {
         return getQueueUrlFromCurrentUrl(includeTargetUrl, sslEnabled, domainAlias, language, layoutName);
     }
-    private URI getQueueUrlFromCurrentUrl(Boolean includeTargetUrl, Boolean sslEnabled, String domainAlias, Locale language, String layoutName) {
+    private String getQueueUrlFromCurrentUrl(Boolean includeTargetUrl, Boolean sslEnabled, String domainAlias, Locale language, String layoutName) {
         UriComponentsBuilder queueUrl = getQueueUrlWithoutTarget(sslEnabled, domainAlias, language, layoutName);
 
         includeTargetUrl(includeTargetUrl, queueUrl);
 
-        return queueUrl.build(true).toUri();
+        return queueUrl.build(true).toUriString();
     }
     
-    public URI getQueueUrl(URI targetUrl) {
+    public String getQueueUrl(String targetUrl) {
         return getQueueUrl(targetUrl, null, null, null, null);
     }
     
-    public URI getQueueUrl(URI targetUrl, Boolean sslEnabled) {
+    public String getQueueUrl(String targetUrl, Boolean sslEnabled) {
         return getQueueUrl(targetUrl, sslEnabled, null, null, null);
     }
 
-    public URI getQueueUrl(URI targetUrl, Boolean sslEnabled, String domainAlias) {
+    public String getQueueUrl(String targetUrl, Boolean sslEnabled, String domainAlias) {
         return getQueueUrl(targetUrl, sslEnabled, domainAlias, null, null);
     }
         
-    public URI getQueueUrl(URI targetUrl, Boolean sslEnabled, String domainAlias, Locale language) {
+    public String getQueueUrl(String targetUrl, Boolean sslEnabled, String domainAlias, Locale language) {
         return getQueueUrl(targetUrl, sslEnabled, domainAlias, language, null);
     }
             
-    public URI getQueueUrl(URI targetUrl, Boolean sslEnabled, String domainAlias, Locale language, String layoutName) {
+    public String getQueueUrl(String targetUrl, Boolean sslEnabled, String domainAlias, Locale language, String layoutName) {
        UriComponentsBuilder queueUrl = getQueueUrlWithoutTarget(sslEnabled, domainAlias, language, layoutName);
 
         includeTargetUrl(targetUrl, queueUrl);
 
-        return queueUrl.build(true).toUri();
+        return queueUrl.build(true).toUriString();
     }
     
-    public URI getCancelUrl() {
+    public String getCancelUrl() {
         return this.getCancelUrl(null, null, null, null);
     }
     
-    public URI getCancelUrl(URI landingPage) {
+    public String getCancelUrl(String landingPage) {
         return this.getCancelUrl(landingPage, null, null, null);    
     }
     
-    public URI getCancelUrl(URI landingPage, UUID queueId) {
+    public String getCancelUrl(String landingPage, UUID queueId) {
         return this.getCancelUrl(landingPage, queueId, null, null);    
     }
     
-    public URI getCancelUrl(URI landingPage, UUID queueId, Boolean sslEnabled) {
+    public String getCancelUrl(String landingPage, UUID queueId, Boolean sslEnabled) {
         return this.getCancelUrl(landingPage, queueId, sslEnabled, null);    
     }
     
-    public URI getCancelUrl(URI landingPage, UUID queueId, Boolean sslEnabled, String domainAlias) {
+    public String getCancelUrl(String landingPage, UUID queueId, Boolean sslEnabled, String domainAlias) {
         UriComponentsBuilder cancelUrl = domainAlias != null
             ? generateCancelUrl(sslEnabled, domainAlias)
-            : UriComponentsBuilder.fromUri(this.defaultCancelUrl);
+            : UriComponentsBuilder.fromUriString(this.defaultCancelUrl);
 
         if (sslEnabled != null)
         {
@@ -169,59 +165,59 @@ class Queue implements IQueue {
             cancelUrl.replaceQueryParam("r", this.defaultLandingPageUrl.toString());
         }
 
-        return cancelUrl.build(true).toUri();  
+        return cancelUrl.build(true).toUriString();  
     }
     
-    public URI getLandingPageUrl() {
+    public String getLandingPageUrl() {
         return getLandingPageUrlFromCurrentUrl(null);
     }
     
-    public URI getLandingPageUrl(Boolean includeTargetUrl) {
+    public String getLandingPageUrl(Boolean includeTargetUrl) {
         return getLandingPageUrlFromCurrentUrl(includeTargetUrl);
     }
     
-    private URI getLandingPageUrlFromCurrentUrl(Boolean includeTargetUrl) {
+    private String getLandingPageUrlFromCurrentUrl(Boolean includeTargetUrl) {
         if (this.defaultLandingPageUrl == null)
             return null;
 
         if ((includeTargetUrl == null || !includeTargetUrl) && !this.defaultIncludeTargetUrl)
-            return this.defaultLandingPageUrl;
+            return this.defaultLandingPageUrl.toString();
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUri(this.defaultLandingPageUrl);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(this.defaultLandingPageUrl);
 
         includeTargetUrl(includeTargetUrl, builder);
 
-        return builder.build(true).toUri();
+        return builder.build(true).toUriString();
     }
     
-    public URI getLandingPageUrl(URI targetUrl) {
+    public String getLandingPageUrl(String targetUrl) {
         if (this.defaultLandingPageUrl == null)
             return null;
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUri(this.defaultLandingPageUrl);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(this.defaultLandingPageUrl);
 
         includeTargetUrl(targetUrl, builder);
 
-        return builder.build(true).toUri();
+        return builder.build(true).toUriString();
     }
     
-    Boolean getDefaultSslEnabled() {
+    public Boolean getDefaultSslEnabled() {
         return this.defaultSslEnabled;
     }
     
-    Boolean getDefaultIncludeTargetUrl() {
+    public Boolean getDefaultIncludeTargetUrl() {
         return this.defaultIncludeTargetUrl;
     }
     
-    String getDefaultDomainAlias() {
+    public String getDefaultDomainAlias() {
         return this.defaultDomainAlias;
     }
 
-    Locale getDefaultLanguage() {
+    public Locale getDefaultLanguage() {
         return this.defaultLanguage;
     }
         
-    String getDefaultLayoutName() {
+    public String getDefaultLayoutName() {
         return this.defaultLayoutName;
     }
     private UriComponentsBuilder generateQueueUrl(Boolean sslEnabled, String domainAlias, Locale language, String layoutName)
@@ -240,9 +236,30 @@ class Queue implements IQueue {
         if (language != null)
             uri.queryParam("cid", language.toString());
         if (layoutName != null && !layoutName.isEmpty())
-            uri.queryParam("l", layoutName);
+        {
+            String encodedLayoutName = encodeURIComponent(layoutName);
+            uri.queryParam("l", encodedLayoutName);      
+        }
         
         return uri;
+    }
+    
+    private static String encodeURIComponent(String s) {
+        String result;
+
+        try {
+            result = URLEncoder.encode(s, "UTF-8")
+                .replaceAll("\\+", "%20")
+                .replaceAll("\\%21", "!")
+                .replaceAll("\\%27", "'")
+                .replaceAll("\\%28", "(")
+                .replaceAll("\\%29", ")")
+                .replaceAll("\\%7E", "~");
+        } catch (UnsupportedEncodingException e) {
+            result = s;
+        }
+
+        return result;
     }
     
     private UriComponentsBuilder generateCancelUrl(Boolean sslEnabled, String domainAlias)
@@ -265,7 +282,7 @@ class Queue implements IQueue {
     {
         UriComponentsBuilder queueUrl = (domainAlias != null)
             ? generateQueueUrl(sslEnabled, domainAlias, language, layoutName)
-            : UriComponentsBuilder.fromUri(this.defaultQueueUrl);
+            : UriComponentsBuilder.fromUriString(this.defaultQueueUrl);
 
         if (sslEnabled != null)
         {
@@ -287,21 +304,19 @@ class Queue implements IQueue {
 
         if (!includeTargetUrl)
             return;
-        try {
-            includeTargetUrl(new URI(request.getRequestURL().toString()), queueUrl);
-        } catch (URISyntaxException ex) {
-            
-        }
+       
+        StringBuffer requestURL = request.getRequestURL();
+        String queryString = request.getQueryString();
 
+        if (queryString != null) {
+            requestURL.append('?').append(queryString);
+        }
+        
+        includeTargetUrl(requestURL.toString().toString(), queueUrl);
     }
 
-    private static void includeTargetUrl(URI targetUrl, UriComponentsBuilder queueUrl)
+    private static void includeTargetUrl(String targetUrl, UriComponentsBuilder queueUrl)
     {
-        try {       
-            queueUrl.replaceQueryParam("t", URLEncoder.encode(targetUrl.toString(), "UTF-8"));
-        } catch (UnsupportedEncodingException ex) {
-            queueUrl.replaceQueryParam("t", targetUrl.toString());
-        }
+        queueUrl.replaceQueryParam("t", encodeURIComponent(targetUrl));
     }
-
 }

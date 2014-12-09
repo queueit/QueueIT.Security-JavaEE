@@ -1,25 +1,23 @@
 package queueit.security;
 
-import java.net.URI;
-
 public abstract class KnownUserException extends SecurityException
 {
-    private URI originalUrl;
-    private URI validationUrl;
+    private String originalUrl;
+    private String validationUrl;
 
-    public URI getOriginalUrl() {
+    public String getOriginalUrl() {
         return this.originalUrl;
     }
 
-    public URI getValidationUrl() {
+    public String getValidationUrl() {
         return this.validationUrl;
     }
 
-    void setOriginalUrl(URI originalUrl) {
+    void setOriginalUrl(String originalUrl) {
         this.originalUrl = originalUrl;
     }   
 
-    void setValidationUrl(URI validationUrl) {
+    void setValidationUrl(String validationUrl) {
         this.validationUrl = validationUrl;
     }   
 

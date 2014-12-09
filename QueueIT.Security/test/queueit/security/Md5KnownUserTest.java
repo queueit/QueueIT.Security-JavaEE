@@ -1,8 +1,5 @@
 package queueit.security;
 
-import queueit.security.RedirectType;
-import queueit.security.Md5KnownUser;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Calendar;
 import java.util.Date;
@@ -24,7 +21,7 @@ public class Md5KnownUserTest {
         Integer expectedPlaceInQueue = 465;
         String expectedCustomerId = "somecust";
         String expectedEventId = "someevent";
-        URI expectedOriginalUrl = new URI("http://google.com/");
+        String expectedOriginalUrl = "http://google.com/";
         RedirectType expectedRedirectType = RedirectType.DirectLink;
 
         //Act

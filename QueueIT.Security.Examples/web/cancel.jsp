@@ -5,7 +5,7 @@
 <%
     try
     {
-        IValidateResult result = SessionValidationController.validateRequest("ticketania", request.getParameter("eventid"));
+        IValidateResult result = SessionValidationController.validateRequest("ticketania", request.getParameter("eventId"));
 
         // Check if user must be enqueued
         if (result instanceof AcceptedConfirmedResult)

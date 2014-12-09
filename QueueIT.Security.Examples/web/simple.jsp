@@ -1,4 +1,3 @@
-<%@page import="java.net.URI"%>
 <%@page import="java.util.concurrent.Callable"%>
 <%@page import="queueit.security.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -23,7 +22,7 @@
         {
             String currentUrl = request.getRequestURL().toString();
             cancelUrl = result.getQueue().getCancelUrl(
-                    new URI(currentUrl.substring(0, currentUrl.indexOf("simple.jsp")) + "cancel.jsp?eventId=simple")).toString();
+                    currentUrl.substring(0, currentUrl.indexOf("simple.jsp")) + "cancel.jsp?eventId=simple");
             expireUrl = "expire.jsp?eventid=simple";
             
             request.setAttribute("cancelUrl", cancelUrl);
@@ -45,7 +44,7 @@
 %>
 <t:master>
     <jsp:attribute name="title">
-        Simple
+        Simple Queue Configuration
     </jsp:attribute>
     <jsp:attribute name="body">
         <h3>Setting up the queue:</h3>

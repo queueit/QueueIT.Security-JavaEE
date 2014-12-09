@@ -1,15 +1,13 @@
 package queueit.security;
 
-import java.net.URI;
-
 public class EnqueueResult extends ValidateResultBase {
-    private URI redirectUrl;
+    private String redirectUrl;
     
-    public URI getRedirectUrl() {
+    public String getRedirectUrl() {
         return this.redirectUrl;
     }
 
-    EnqueueResult(IQueue queue, URI redirectUrl)
+    EnqueueResult(IQueue queue, String redirectUrl)
     {
         super(queue);
         this.redirectUrl = redirectUrl;

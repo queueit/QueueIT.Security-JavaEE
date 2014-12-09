@@ -4,8 +4,6 @@
  */
 package queueit.security;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,12 +21,8 @@ public class DefaultKnownUserUrlProvider implements IKnownUserUrlProvider {
     }
         
     @Override
-    public URI getUrl() {
-        try {
-            return new URI(this.requestUrl);
-        } catch (URISyntaxException ex) {
-            return null;
-        }
+    public String getUrl() {
+        return this.requestUrl;
     }
 
     @Override
@@ -57,7 +51,7 @@ public class DefaultKnownUserUrlProvider implements IKnownUserUrlProvider {
     }
 
     @Override
-    public URI getOriginalUrl(String queryStringPrefix) {
+    public String getOriginalUrl(String queryStringPrefix) {
         String url = this.requestUrl;
 	url = url.replaceAll("(?i)([\\?&])(" + queryStringPrefix + "q=[^&]*&?)", "$1");
 	url = url.replaceAll("(?i)([\\?&])(" + queryStringPrefix + "p=[^&]*&?)", "$1");
@@ -68,11 +62,7 @@ public class DefaultKnownUserUrlProvider implements IKnownUserUrlProvider {
 	url = url.replaceAll("(?i)([\\?&])(" + queryStringPrefix + "h=[^&]*&?)", "$1");
 	url = url.replaceAll("[\\?&]$", "");
         
-        try {
-            return new URI(url);
-        } catch (URISyntaxException ex) {
-            return null;
-        }
+        return url;
     }
 
     @Override
