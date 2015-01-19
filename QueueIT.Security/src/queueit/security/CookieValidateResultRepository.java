@@ -233,8 +233,7 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
                 .append(redirectType)
                 .append(timeStamp)
                 .append(expirationTime.getTime())
-                .append(KnownUserFactory.getSecretKey())
-                .append(this.getFingerprint());
+                .append(KnownUserFactory.getSecretKey());
                     
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(sb.toString().getBytes("UTF-8"));
@@ -253,13 +252,5 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
     @Override
     public void cancel(IQueue queue, IValidateResult validationResult) {
         this.setValidationResult(queue, validationResult, new Date(System.currentTimeMillis()-24*60*60*1000));
-    }
-
-    private Object getFingerprint() {
-        HttpServletRequest request = RequestContext.getCurrentInstance().getRequest();
-        if (request == null)
-            return "";
-        
-        return request.getHeader("User-Agent") + request.getHeader("Accept") + request.getHeader("Accept-Encoding") + request.getHeader("Accept-Language");
     }
 }
