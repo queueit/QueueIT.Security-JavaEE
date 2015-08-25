@@ -7,21 +7,21 @@ import java.util.Properties;
 
 public class QueueFactory {
     private static String defaultHostDomain = "queue-it.net";
-    
-    private static Map<String, Queue> loadedQueues = new HashMap<String, Queue>(); 
+
+    private static Map<String, Queue> loadedQueues = new HashMap<String, Queue>();
 
     static void reset()
     {
-        loadedQueues = new HashMap<String, Queue>(); 
+        loadedQueues = new HashMap<String, Queue>();
 
         defaultHostDomain = "queue-it.net";
     }
-    
+
     public static IQueue createQueue()
     {
         return createQueue("default");
     }
-    
+
     public static IQueue createQueue(String queueName)
     {
         if (queueName == null || queueName.isEmpty())
@@ -47,9 +47,9 @@ public class QueueFactory {
             return queue;
         } catch (Exception e) {
             throw new IllegalArgumentException("Unable to initialize queue", e);
-        }  
+        }
     }
-    
+
     public static IQueue createQueue(String customerId, String eventId)
     {
         if (customerId == null || customerId.isEmpty())
@@ -61,7 +61,7 @@ public class QueueFactory {
 
         return queue;
     }
-    
+
     public static void configure(String hostDomain)
     {
         if (hostDomain != null && !hostDomain.isEmpty())
@@ -72,8 +72,8 @@ public class QueueFactory {
     {
         return customerId + "_" + eventId;
     }
-    
-    private static Queue instantiateQueue(String customerId, String eventId, String domainAlias, String landingPage, 
+
+    private static Queue instantiateQueue(String customerId, String eventId, String domainAlias, String landingPage,
         Boolean sslEnabled, Boolean includeTargetUrl, Locale language, String layoutName)
     {
         String key = generateKey(customerId, eventId);
@@ -81,13 +81,13 @@ public class QueueFactory {
         Map<String, Queue> queues = loadedQueues;
 
         Queue queue = loadedQueues.get(key);
-        
+
         if (queue != null)
             return queue;
 
         if (domainAlias == null || domainAlias.isEmpty())
         {
-            domainAlias = eventId + "-" + customerId + "." + defaultHostDomain;
+            domainAlias = customerId + "." + defaultHostDomain;
         }
 
         queue = new Queue(
@@ -95,7 +95,7 @@ public class QueueFactory {
             eventId,
             domainAlias,
             landingPage,
-            sslEnabled, 
+            sslEnabled,
             includeTargetUrl,
             language,
             layoutName);
