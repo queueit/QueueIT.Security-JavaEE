@@ -190,7 +190,7 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
     {                     
         cookie.setHttpOnly(true);      
         cookie.setMaxAge(maxAge < 0 ? 0 : maxAge);
-		cookie.setPath("/");
+        cookie.setPath("/");
         if (defaultCookieDomain != null)
             cookie.setDomain(defaultCookieDomain);
                
@@ -208,11 +208,11 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
             DateFormat df = new SimpleDateFormat("dd-MMM-yyyy kk:mm:ss z");
             df.setTimeZone(TimeZone.getTimeZone("GMT"));
 
-            response.setHeader("Set-Cookie", key + "=true; Expires=" + df.format(expdate) + ";");
+            response.setHeader("Set-Cookie", key + "=true; Path=/; Expires=" + df.format(expdate) + ";");
         }
         else
         {
-            response.setHeader("Set-Cookie", key + "=true; Expires=Thu, 11-Sep-2014 11:27:49 GMT;");
+            response.setHeader("Set-Cookie", key + "=true; Path=/; Expires=Thu, 11-Sep-2014 11:27:49 GMT;");
         }
         
         for (String cookieHeader : cookieHeaders)
