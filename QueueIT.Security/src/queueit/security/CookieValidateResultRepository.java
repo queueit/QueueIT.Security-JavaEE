@@ -190,6 +190,7 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
     {                     
         cookie.setHttpOnly(true);      
         cookie.setMaxAge(maxAge < 0 ? 0 : maxAge);
+		cookie.setPath("/");
         if (defaultCookieDomain != null)
             cookie.setDomain(defaultCookieDomain);
                
