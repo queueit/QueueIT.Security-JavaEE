@@ -18,6 +18,7 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
     static String defaultCookieDomain;
     static int defaultCookieExpiration = 1200;
     static int defaultIdleExpiration = 180;
+    static boolean defaultExtendValidity = true;
     
     static {       
         loadConfiguration();
@@ -31,12 +32,13 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
             defaultCookieDomain = props.getProperty("cookieDomain", null);
             defaultCookieExpiration =  Integer.parseInt(props.getProperty("cookieExpiration", "1200"));
             defaultIdleExpiration =  Integer.parseInt(props.getProperty("idleExpiration", "180"));
+            defaultExtendValidity =  Boolean.parseBoolean(props.getProperty("extendValidity", "true"));
         } catch (Exception e) {
             // no need to handle exception
         }    
     }
     
-    public static void configure(String cookieDomain, Integer cookieExpiration, Integer idleExpiration)
+    public static void configure(String cookieDomain, Integer cookieExpiration, Integer idleExpiration, Boolean extendValidity)
     {
         if (cookieDomain != null)
             defaultCookieDomain = cookieDomain;
@@ -44,6 +46,8 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
             defaultCookieExpiration = cookieExpiration;
         if (idleExpiration != null)
             defaultIdleExpiration = idleExpiration;        
+        if (extendValidity != null)
+            defaultExtendValidity = extendValidity;  
     }
     
     @Override
@@ -109,7 +113,7 @@ public class CookieValidateResultRepository extends ValidateResultRepositoryBase
         if (!expectedHash.equals(actualHash))
             return null;
         
-        if (redirectType != RedirectType.Idle)
+        if (defaultExtendValidity && redirectType != RedirectType.Idle)
         {
             Date newExpirationTime = new Date((new Date()).getTime() + (defaultCookieExpiration * 1000));
             String newHash = generateHash(queueId, originalUrl, placeInQueue, redirectType.toString(), timeStamp, newExpirationTime);

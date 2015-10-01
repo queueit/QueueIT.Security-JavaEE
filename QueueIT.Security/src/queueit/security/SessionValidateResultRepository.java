@@ -8,7 +8,8 @@ import javax.servlet.http.HttpSession;
 public class SessionValidateResultRepository extends ValidateResultRepositoryBase {
             
     static int defaultIdleExpiration = 180;
-    
+    static boolean defaultExtendValidity = true;
+        
     static {       
         loadConfiguration();
     }
@@ -19,15 +20,18 @@ public class SessionValidateResultRepository extends ValidateResultRepositoryBas
             // Load the properties
             Properties props = QueueitProperties.getProperties("queueit.properties");
             defaultIdleExpiration =  Integer.parseInt(props.getProperty("idleExpiration", "180"));
+            defaultExtendValidity =  Boolean.parseBoolean(props.getProperty("extendValidity", "true"));
         } catch (Exception e) {
             // no need to handle exception
         }    
     }
     
-    public static void configure(Integer idleExpiration)
+    public static void configure(Integer idleExpiration, Boolean extendValidity)
     {
         if (idleExpiration != null)
             defaultIdleExpiration = idleExpiration;        
+        if (extendValidity != null)
+            defaultExtendValidity = extendValidity;  
     }
     @Override
     public IValidateResult getValidationResult(IQueue queue) {
@@ -66,6 +70,14 @@ public class SessionValidateResultRepository extends ValidateResultRepositoryBas
     
         if (validationResult instanceof AcceptedConfirmedResult)
         {
+            if (defaultExtendValidity && expirationTime == null) 
+            {
+                HttpServletRequest request = RequestContext.getCurrentInstance().getRequest();
+                HttpSession session = request.getSession(true);
+        
+                expirationTime = new Date(System.currentTimeMillis()+(session.getMaxInactiveInterval()*1000));
+            }
+            
             AcceptedConfirmedResult confirmedResult = (AcceptedConfirmedResult)validationResult;
             
             HttpServletRequest request = RequestContext.getCurrentInstance().getRequest();
@@ -79,7 +91,6 @@ public class SessionValidateResultRepository extends ValidateResultRepositoryBas
             model.TimeStamp = confirmedResult.getKnownUser().getTimeStamp();
             model.RedirectType = confirmedResult.getKnownUser().getRedirectType();
             model.PlaceInQueue = confirmedResult.getKnownUser().getPlaceInQueue();
-            model.Expiration = expirationTime;
             
             if (expirationTime != null)
                 model.Expiration = expirationTime;
