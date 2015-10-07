@@ -70,14 +70,6 @@ public class SessionValidateResultRepository extends ValidateResultRepositoryBas
     
         if (validationResult instanceof AcceptedConfirmedResult)
         {
-            if (defaultExtendValidity == false && expirationTime == null) 
-            {
-                HttpServletRequest request = RequestContext.getCurrentInstance().getRequest();
-                HttpSession session = request.getSession(true);
-        
-                expirationTime = new Date(System.currentTimeMillis()+(session.getMaxInactiveInterval()*1000));
-            }
-            
             AcceptedConfirmedResult confirmedResult = (AcceptedConfirmedResult)validationResult;
             
             HttpServletRequest request = RequestContext.getCurrentInstance().getRequest();
@@ -96,6 +88,8 @@ public class SessionValidateResultRepository extends ValidateResultRepositoryBas
                 model.Expiration = expirationTime;
             else if (confirmedResult.getKnownUser().getRedirectType() == RedirectType.Idle)
                 model.Expiration = new Date(System.currentTimeMillis()+(defaultIdleExpiration*1000));
+            else if (defaultExtendValidity == false )      
+                model.Expiration = new Date(System.currentTimeMillis()+(session.getMaxInactiveInterval()*1000));
           
             session.setAttribute(key, model);
         }
