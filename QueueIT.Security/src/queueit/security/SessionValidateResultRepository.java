@@ -70,7 +70,7 @@ public class SessionValidateResultRepository extends ValidateResultRepositoryBas
     
         if (validationResult instanceof AcceptedConfirmedResult)
         {
-            if (defaultExtendValidity && expirationTime == null) 
+            if (defaultExtendValidity == false && expirationTime == null) 
             {
                 HttpServletRequest request = RequestContext.getCurrentInstance().getRequest();
                 HttpSession session = request.getSession(true);
