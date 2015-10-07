@@ -1,9 +1,17 @@
 package queueit.security;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Locale;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.UUID;
+import java.util.jar.Attributes;
+import static java.util.jar.Attributes.Name.IMPLEMENTATION_VERSION;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
@@ -241,7 +249,28 @@ class Queue implements IQueue {
             uri.queryParam("l", encodedLayoutName);      
         }
         
+        uri.queryParam("ver", "j" + getVersionNumber());
+        
         return uri;
+    }
+    
+    private String getVersionNumber() {
+        // Get jarfile url
+        String jarUrl = Queue.class
+            .getProtectionDomain().getCodeSource()
+            .getLocation().getFile();
+
+        try {
+            JarFile jar = new JarFile(new File(jarUrl));
+            
+            Manifest manifest = jar.getManifest();
+            Attributes attributes = manifest.getMainAttributes();
+
+            return attributes.getValue(IMPLEMENTATION_VERSION);
+            
+        } catch (IOException ex) {
+            return "unknown";
+        } 
     }
     
     private static String encodeURIComponent(String s) {
