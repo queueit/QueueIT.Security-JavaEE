@@ -52,11 +52,6 @@ public class QueueFactory {
 
     public static IQueue createQueue(String customerId, String eventId)
     {
-        if (customerId == null || customerId.isEmpty())
-            throw new IllegalArgumentException("Customer ID cannot be null or empty");
-        if (eventId == null || eventId.isEmpty())
-            throw new IllegalArgumentException("Event ID cannot be null or empty");
-
         Queue queue = instantiateQueue(customerId, eventId, null, null, false, false, null, null);
 
         return queue;
@@ -76,6 +71,14 @@ public class QueueFactory {
     private static Queue instantiateQueue(String customerId, String eventId, String domainAlias, String landingPage,
         Boolean sslEnabled, Boolean includeTargetUrl, Locale language, String layoutName)
     {
+        if (customerId == null || customerId.isEmpty())
+            throw new IllegalArgumentException("Customer ID cannot be null or empty");
+        if (eventId == null || eventId.isEmpty())
+            throw new IllegalArgumentException("Event ID cannot be null or empty");
+        
+        customerId = customerId.toLowerCase().trim();
+        eventId = eventId.toLowerCase().trim();
+        
         String key = generateKey(customerId, eventId);
 
         Map<String, Queue> queues = loadedQueues;
