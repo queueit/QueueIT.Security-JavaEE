@@ -230,11 +230,14 @@ public class KnownUserFactory {
 
     private static void validateHash(String requestUrl, String sharedEventKey, String expectedHash) {
         String stringToHash = requestUrl.substring(0, requestUrl.length() - 32) + sharedEventKey; //Remove hash value and add SharedEventKey
-        String actualHash = Hashing.getMd5Hash(stringToHash);
+        String actualHashHttp = Hashing.getMd5Hash(stringToHash.replaceFirst("^https://(.*)$", "http://$1"));
+        String actualHashHttps = Hashing.getMd5Hash(stringToHash.replaceFirst("^http://(.*)$", "https://$1"));
 
-        if (!actualHash.equals(expectedHash)) {
-            throw new InvalidKnownUserHashException();
+        if (actualHashHttp.equals(expectedHash) || actualHashHttps.equals(expectedHash)) {
+            return;
         }
+        
+        throw new InvalidKnownUserHashException();
     }
 
     private static void validateUrl(String url) {
