@@ -323,25 +323,13 @@ class Queue implements IQueue {
     
     private void includeTargetUrl(Boolean includeTargetUrl, UriComponentsBuilder queueUrl)
     {
-        HttpServletRequest request = RequestContext.getCurrentInstance().getRequest();
-        if (request == null) {
-            return;
-        }
-
         if (includeTargetUrl == null)
             includeTargetUrl = this.defaultIncludeTargetUrl;
 
         if (!includeTargetUrl)
             return;
-       
-        StringBuffer requestURL = request.getRequestURL();
-        String queryString = request.getQueryString();
-
-        if (queryString != null) {
-            requestURL.append('?').append(queryString);
-        }
-        
-        includeTargetUrl(requestURL.toString().toString(), queueUrl);
+              
+        includeTargetUrl(KnownUserFactory.getKnownUserUrlProvider().getUrl(), queueUrl);
     }
 
     private static void includeTargetUrl(String targetUrl, UriComponentsBuilder queueUrl)

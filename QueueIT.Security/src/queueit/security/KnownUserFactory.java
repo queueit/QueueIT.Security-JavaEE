@@ -65,6 +65,15 @@ public class KnownUserFactory {
             defaultQuerystringPrefix = querystringPrefix;
         }       
     }
+    
+    static IKnownUserUrlProvider getKnownUserUrlProvider()
+    {
+        try {
+            return defaultUrlProviderFactory.call();
+        } catch (Exception ex) {
+            throw new InvalidKnownUserUrlException();
+        }
+    }
 
     public static IKnownUser verifyMd5Hash() 
         throws InvalidKnownUserUrlException, InvalidKnownUserHashException {
