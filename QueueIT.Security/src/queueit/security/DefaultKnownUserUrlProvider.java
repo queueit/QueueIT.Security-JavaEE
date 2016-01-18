@@ -81,14 +81,40 @@ public class DefaultKnownUserUrlProvider implements IKnownUserUrlProvider {
         if (request != null) {
             StringBuffer requestURL = request.getRequestURL();
             String queryString = request.getQueryString();
+            
+            String url = null;
 
             if (queryString == null) {
-                this.requestUrl = requestURL.toString();
+                url = requestURL.toString();
             } else {
-                this.requestUrl = requestURL.append('?').append(queryString).toString();
+                url = requestURL.append('?').append(queryString).toString();
             }
+            
+            this.requestUrl = RemovePort443OnHttps(RemovePort80OnHttp(UrlMustHaveSlashAfterDomain(url)));
             
             this.querystringParms = request.getParameterMap();
         }
     }
+    
+    private static String RemovePort443OnHttps(String url)
+    {
+        return url.replaceFirst("^(https://[^/\\?]*):443/", "$1/");
+    }
+
+    private static String RemovePort80OnHttp(String url)
+    {
+        return url.replaceFirst("^(http://[^/\\?]*):80/", "$1/");
+    }
+
+    private static String UrlMustHaveSlashAfterDomain(String url)
+    {
+        // ? comes right after domain but there is no slash between them (http://example.com?a=b => http://example.com/?a=b)
+        url = url.replaceFirst("^(http(s)?://[^/\\?]*)\\?", "$1/?");
+
+        // url with no path / querystring that does not end with / (http://example.com => http://example.com/)
+        url = url.replaceFirst("^(http(s)?://[^/\\?]*)$", "$1/");
+
+        return url;
+    }
+
 }

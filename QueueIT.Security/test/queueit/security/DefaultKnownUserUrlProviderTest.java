@@ -49,6 +49,90 @@ public class DefaultKnownUserUrlProviderTest {
     }
     
     @Test
+    public void DefaultKnownUserUrlProvider_GetUrl_MissingSlash_Test() {
+        
+        String expectedUrl = "http://some.url/";
+        
+        HttpServletRequest request = new MockHttpServletRequest("http://some.url");
+        RequestContext.newInstance(request, null);
+        
+        DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider();
+        String actualUrl = provider.getUrl();
+        
+        assertEquals(expectedUrl, actualUrl.toString());       
+    }
+    
+    @Test
+    public void DefaultKnownUserUrlProvider_GetUrl_MissingSlashAndQuerystring_Test() {
+        
+        String expectedUrl = "http://some.url/?sed=sdd";
+        
+        HttpServletRequest request = new MockHttpServletRequest("http://some.url?sed=sdd");
+        RequestContext.newInstance(request, null);
+        
+        DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider();
+        String actualUrl = provider.getUrl();
+        
+        assertEquals(expectedUrl, actualUrl.toString());       
+    }
+    
+    @Test
+    public void DefaultKnownUserUrlProvider_GetUrl_HttpWithPort80_Test() {
+        
+        String expectedUrl = "http://some.url/somepath/default.aspx?x=sdfs";
+        
+        HttpServletRequest request = new MockHttpServletRequest("http://some.url:80/somepath/default.aspx?x=sdfs");
+        RequestContext.newInstance(request, null);
+        
+        DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider();
+        String actualUrl = provider.getUrl();
+        
+        assertEquals(expectedUrl, actualUrl.toString());       
+    }
+
+    @Test
+    public void DefaultKnownUserUrlProvider_GetUrl_HttpWithPort443_Test() {
+        
+        String expectedUrl = "http://some.url:443/somepath/default.aspx?x=sdfs";
+        
+        HttpServletRequest request = new MockHttpServletRequest(expectedUrl);
+        RequestContext.newInstance(request, null);
+        
+        DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider();
+        String actualUrl = provider.getUrl();
+        
+        assertEquals(expectedUrl, actualUrl.toString());       
+    }
+    
+    @Test
+    public void DefaultKnownUserUrlProvider_GetUrl_HttpsWithPort443_Test() {
+        
+        String expectedUrl = "https://some.url/somepath/default.aspx?x=sdfs";
+        
+        HttpServletRequest request = new MockHttpServletRequest("https://some.url:443/somepath/default.aspx?x=sdfs");
+        RequestContext.newInstance(request, null);
+        
+        DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider();
+        String actualUrl = provider.getUrl();
+        
+        assertEquals(expectedUrl, actualUrl.toString());       
+    }
+    
+    @Test
+    public void DefaultKnownUserUrlProvider_GetUrl_HttpsWithPort80_Test() {
+        
+        String expectedUrl = "https://some.url:80/somepath/default.aspx?x=sdfs";
+        
+        HttpServletRequest request = new MockHttpServletRequest(expectedUrl);
+        RequestContext.newInstance(request, null);
+        
+        DefaultKnownUserUrlProvider provider = new DefaultKnownUserUrlProvider();
+        String actualUrl = provider.getUrl();
+        
+        assertEquals(expectedUrl, actualUrl.toString());       
+    }
+    
+    @Test
     public void DefaultKnownUserUrlProvider_GetUrl_SpecialChars_Test() {
         
         String expectedUrl = "http://some.url/somepath?__utma={646484654654}&__utmb=345345.345:34543&__utmc=1&__utmx=-&__utmz=345345.567.46..56.utmcsr=google|utmccn=%28organic%29|utmcmd=organic|utmctr=%28not%20provided%29&__utmv=-&__utmk=234324";
