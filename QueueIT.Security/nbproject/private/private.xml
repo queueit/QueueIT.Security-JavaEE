@@ -4,10 +4,13 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/GIT/QueueIT.Security-JavaEE/QueueIT.Security/nbproject/build-impl.xml</file>
+            <file>file:/C:/GIT/QueueIT.Security-JavaEE/QueueIT.Security/src/queueit/security/KnownUserFactory.java</file>
             <file>file:/C:/GIT/QueueIT.Security-JavaEE/QueueIT.Security/src/queueit/security/Queue.java</file>
             <file>file:/C:/GIT/QueueIT.Security-JavaEE/QueueIT.Security/test/queueit/security/DefaultKnownUserUrlProviderTest.java</file>
+            <file>file:/C:/GIT/QueueIT.Security-JavaEE/QueueIT.Security/test/queueit/security/KnownUserFactoryTest.java</file>
             <file>file:/C:/GIT/QueueIT.Security-JavaEE/QueueIT.Security/src/queueit/security/CookieValidateResultRepository.java</file>
             <file>file:/C:/GIT/QueueIT.Security-JavaEE/QueueIT.Security/src/queueit/security/DefaultKnownUserUrlProvider.java</file>
+            <file>file:/C:/GIT/QueueIT.Security-JavaEE/QueueIT.Security/src/queueit/security/QueueFactory.java</file>
             <file>file:/C:/GIT/QueueIT.Security-JavaEE/QueueIT.Security/src/queueit/security/SessionValidateResultRepository.java</file>
             <file>file:/C:/GIT/QueueIT.Security-JavaEE/QueueIT.Security/src/queueit/security/SessionValidationController.java</file>
         </group>
