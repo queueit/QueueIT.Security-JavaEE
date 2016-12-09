@@ -12,3 +12,7 @@ Build Instructions
 =======================
 
 Ant build script in "Build" folder
+
+Example Config files
+=======================
+https://github.com/queueit/QueueIT.Security-JavaEE/blob/master/QueueIT.Security.Examples/web/WEB-INF/classes/
